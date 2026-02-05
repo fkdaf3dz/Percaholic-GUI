@@ -1,1 +1,1789 @@
+--[[    Ghostz Hub v0.0.30 - Section 1 of 8    ]]
 
+if not game:IsLoaded() then 
+    game.Loaded:Wait() 
+end
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
+local TweenService = game:GetService("TweenService")
+
+if hookfunction then
+    hookfunction(LocalPlayer.Kick, function() 
+        return warn("[Ghostz] Kick blocked")
+    end)
+end
+
+local Ghostz = {
+    Version = "0.0.30",
+    CurrentTab = "Home",
+    Settings = {
+        Language = "English",
+        Webhook = "",
+        BackgroundID = "",
+        Theme = "Purple",
+        BackgroundTransparency = 0.05,
+        UIEnabled = true
+    }
+}
+
+local ThemeColors = {
+    Purple = {Primary = Color3.fromRGB(147, 51, 234), Secondary = Color3.fromRGB(168, 85, 247), Accent = Color3.fromRGB(220, 50, 50), Nav = Color3.fromRGB(30, 30, 40)},
+    Red = {Primary = Color3.fromRGB(220, 50, 50), Secondary = Color3.fromRGB(255, 80, 80), Accent = Color3.fromRGB(147, 51, 234), Nav = Color3.fromRGB(40, 20, 20)},
+    Blue = {Primary = Color3.fromRGB(59, 130, 246), Secondary = Color3.fromRGB(96, 165, 250), Accent = Color3.fromRGB(220, 50, 50), Nav = Color3.fromRGB(20, 30, 40)},
+    Green = {Primary = Color3.fromRGB(34, 197, 94), Secondary = Color3.fromRGB(74, 222, 128), Accent = Color3.fromRGB(220, 50, 50), Nav = Color3.fromRGB(20, 40, 30)},
+    Gold = {Primary = Color3.fromRGB(234, 179, 8), Secondary = Color3.fromRGB(250, 204, 21), Accent = Color3.fromRGB(220, 50, 50), Nav = Color3.fromRGB(40, 35, 20)},
+    Pink = {Primary = Color3.fromRGB(236, 72, 153), Secondary = Color3.fromRGB(244, 114, 182), Accent = Color3.fromRGB(220, 50, 50), Nav = Color3.fromRGB(40, 20, 30)},
+    Dark = {Primary = Color3.fromRGB(100, 100, 100), Secondary = Color3.fromRGB(150, 150, 150), Accent = Color3.fromRGB(200, 200, 200), Nav = Color3.fromRGB(30, 30, 30)},
+    Light = {Primary = Color3.fromRGB(180, 180, 180), Secondary = Color3.fromRGB(220, 220, 220), Accent = Color3.fromRGB(100, 100, 100), Nav = Color3.fromRGB(240, 240, 240)}
+}
+
+local Translations = {
+    English = {
+        Welcome = "Welcome to", GhostzHub = "👻 GHOSTZ HUB", Config = "Config", Features = "Features", Settings = "Settings",
+        Back = "Back", ScriptPages = "Script Pages", SelectCategory = "Select a script category below", Credits = "Credits",
+        ThankYou = "Thank you for using our script!", ChangeServer = "Change Server", Rejoin = "Rejoin", HopServer = "Hop Server",
+        LowHop = "Low Server Hop", CopyJobId = "Copy JobId", JoinSpecific = "Join Specific Server", Join = "Join",
+        EnterJobId = "Enter JobId here...", Webhook = "Webhook", GameSetting = "Game Setting", ScriptSetting = "Script Setting",
+        Servers = "Servers", TrackInfo = "Track in-game info", ControlLight = "Control lighting, fps", SaveLoadReset = "Save, Load & Reset",
+        JoinShare = "Join or share server", ScriptLanguage = "Script Language", SaveSettings = "Save Script Setting",
+        ResetSettings = "Reset Script Setting", ExportConfig = "Export To Config", Saved = "Saved!", Reset = "Reset!",
+        Copied = "Copied!", SetupScripts = "Setup scripts", ESPTeleport = "ESP & Teleport", Customize = "Customize hub",
+        Transparency = "UI Background Transparency", Theme = "Theme", EnableUI = "Enable UI Background"
+    },
+    Chinese = {
+        Welcome = "欢迎来到", GhostzHub = "👻 GHOSTZ HUB", Config = "配置", Features = "功能", Settings = "设置",
+        Back = "返回", ScriptPages = "脚本页面", SelectCategory = "选择脚本类别", Credits = " credits", ThankYou = "感谢您使用我们的脚本！",
+        ChangeServer = "更换服务器", Rejoin = "重新加入", HopServer = "跳转服务器", LowHop = "低人数服务器", CopyJobId = "复制JobId",
+        JoinSpecific = "加入指定服务器", Join = "加入", EnterJobId = "在此处输入JobId...", Webhook = "网络钩子",
+        GameSetting = "游戏设置", ScriptSetting = "脚本设置", Servers = "服务器", TrackInfo = "跟踪游戏信息",
+        ControlLight = "控制灯光和帧率", SaveLoadReset = "保存、加载和重置", JoinShare = "加入或分享服务器",
+        ScriptLanguage = "脚本语言", SaveSettings = "保存脚本设置", ResetSettings = "重置脚本设置", ExportConfig = "导出配置",
+        Saved = "已保存！", Reset = "已重置！", Copied = "已复制！", SetupScripts = "设置脚本", ESPTeleport = "ESP和传送",
+        Customize = "自定义中心", Transparency = "UI背景透明度", Theme = "主题", EnableUI = "启用UI背景"
+    },
+    Japanese = {
+        Welcome = "ようこそ", GhostzHub = "👻 GHOSTZ HUB", Config = "設定", Features = "機能", Settings = "設定",
+        Back = "戻る", ScriptPages = "スクリプトページ", SelectCategory = "カテゴリを選択", Credits = "クレジット",
+        ThankYou = "ご利用ありがとうございます！", ChangeServer = "サーバー変更", Rejoin = "再参加", HopServer = "サーバーホップ",
+        LowHop = "低人数サーバー", CopyJobId = "JobIdをコピー", JoinSpecific = "特定のサーバーに参加", Join = "参加",
+        EnterJobId = "JobIdを入力...", Webhook = "ウェブフック", GameSetting = "ゲーム設定", ScriptSetting = "スクリプト設定",
+        Servers = "サーバー", TrackInfo = "ゲーム情報を追跡", ControlLight = "照明とFPSを制御", SaveLoadReset = "保存、読み込み、リセット",
+        JoinShare = "サーバーに参加または共有", ScriptLanguage = "スクリプト言語", SaveSettings = "設定を保存",
+        ResetSettings = "設定をリセット", ExportConfig = "設定をエクスポート", Saved = "保存完了！", Reset = "リセット完了！",
+        Copied = "コピー完了！", SetupScripts = "スクリプトのセットアップ", ESPTeleport = "ESPとテレポート",
+        Customize = "ハブをカスタマイズ", Transparency = "UI背景透明度", Theme = "テーマ", EnableUI = "UI背景を有効化"
+    },
+    Russian = {
+        Welcome = "Добро пожаловать в", GhostzHub = "👻 GHOSTZ HUB", Config = "Конфиг", Features = "Функции", Settings = "Настройки",
+        Back = "Назад", ScriptPages = "Страницы скриптов", SelectCategory = "Выберите категорию скрипта", Credits = "Авторы",
+        ThankYou = "Спасибо за использование нашего скрипта!", ChangeServer = "Сменить сервер", Rejoin = "Перезайти",
+        HopServer = "Сменить сервер", LowHop = "Сервер с малым онлайном", CopyJobId = "Копировать JobId",
+        JoinSpecific = "Присоединиться к серверу", Join = "Войти", EnterJobId = "Введите JobId...", Webhook = "Вебхук",
+        GameSetting = "Настройки игры", ScriptSetting = "Настройки скрипта", Servers = "Серверы", TrackInfo = "Отслеживание информации",
+        ControlLight = "Управление светом и FPS", SaveLoadReset = "Сохранить, загрузить и сбросить", JoinShare = "Присоединиться или поделиться сервером",
+        ScriptLanguage = "Язык скрипта", SaveSettings = "Сохранить настройки", ResetSettings = "Сбросить настройки",
+        ExportConfig = "Экспорт конфига", Saved = "Сохранено！", Reset = "Сброшено！", Copied = "Скопировано！",
+        SetupScripts = "Настройка скриптов", ESPTeleport = "ESP и Телепорт", Customize = "Настройка хаба",
+        Transparency = "Прозрачность фона", Theme = "Тема", EnableUI = "Включить фон UI"
+    }
+}
+
+local UILabels = {}
+local ContentFrames = {}
+local TabButtons = {}
+
+local function GetText(key)
+    local lang = Ghostz.Settings.Language or "English"
+    if Translations[lang] and Translations[lang][key] then
+        return Translations[lang][key]
+    end
+    return Translations["English"][key] or key
+end
+
+local function SaveSettings()
+    local json = HttpService:JSONEncode(Ghostz.Settings)
+    writefile("Ghostz_Config.json", json)
+end
+
+local function LoadSettings()
+    if isfile("Ghostz_Config.json") then
+        local json = readfile("Ghostz_Config.json")
+        local success, data = pcall(function() 
+            return HttpService:JSONDecode(json) 
+        end)
+        if success then
+            for k, v in pairs(data) do
+                Ghostz.Settings[k] = v
+            end
+        end
+    end
+end
+
+pcall(LoadSettings)
+--[[    Ghostz Hub v0.0.30 - Section 2 of 8    ]]
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "Ghostz"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local parentSuccess = pcall(function()
+    ScreenGui.Parent = game:GetService("CoreGui")
+end)
+
+if not parentSuccess then
+    ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+end
+
+-- Confetti Animation Function
+local function CreateConfetti()
+    for i = 1, 40 do
+        local confetti = Instance.new("TextLabel")
+        confetti.Text = "■"
+        confetti.Size = UDim2.new(0, 10, 0, 10)
+        confetti.Position = UDim2.new(math.random(10, 90)/100, 0, 0.1, 0)
+        confetti.BackgroundTransparency = 1
+        confetti.TextColor3 = Color3.fromHSV(math.random(), 0.9, 1)
+        confetti.TextSize = 20
+        confetti.Font = Enum.Font.GothamBold
+        confetti.Parent = Main
+        confetti.ZIndex = 50
+        
+        local targetY = 0.8 + (math.random() * 0.2)
+        local rotation = math.random(-360, 360)
+        
+        local tween = TweenService:Create(confetti, TweenInfo.new(1.5 + math.random(), Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Position = UDim2.new(confetti.Position.X.Scale, 0, targetY, 0),
+            Rotation = rotation,
+            TextTransparency = 1
+        })
+        
+        tween:Play()
+        game:GetService("Debris"):AddItem(confetti, 2)
+    end
+end
+
+local Main = Instance.new("Frame")
+Main.Size = UDim2.new(0, 618, 0, 475)
+Main.Position = UDim2.new(0.5, -309, 0.45, -237)
+Main.BackgroundColor3 = Color3.fromRGB(18, 18, 25)
+Main.BackgroundTransparency = Ghostz.Settings.UIEnabled and Ghostz.Settings.BackgroundTransparency or 1
+Main.Visible = false
+Main.Active = true
+Main.Draggable = false
+Main.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 16)
+MainCorner.Parent = Main
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = ThemeColors[Ghostz.Settings.Theme].Primary
+MainStroke.Thickness = 2
+MainStroke.Parent = Main
+
+local Glow = Instance.new("ImageLabel")
+Glow.Size = UDim2.new(1.3, 0, 1.2, 0)
+Glow.Position = UDim2.new(-0.15, 0, -0.1, 0)
+Glow.BackgroundTransparency = 1
+Glow.Image = "rbxassetid://4996891970"
+Glow.ImageColor3 = ThemeColors[Ghostz.Settings.Theme].Primary
+Glow.ImageTransparency = 0.85
+Glow.ZIndex = 0
+Glow.Parent = Main
+
+local Island = Instance.new("TextButton")
+Island.Size = UDim2.new(0, 120, 0, 40)
+Island.Position = UDim2.new(0.5, -60, 0, 30)
+Island.BackgroundColor3 = ThemeColors[Ghostz.Settings.Theme].Primary
+Island.BackgroundTransparency = 0.2
+Island.Text = "👻 Ghostz"
+Island.TextColor3 = Color3.new(1, 1, 1)
+Island.TextSize = 18
+Island.Font = Enum.Font.GothamBold
+Island.AutoButtonColor = false
+Island.Active = true
+Island.Draggable = true
+Island.Parent = ScreenGui
+
+local IslandCorner = Instance.new("UICorner")
+IslandCorner.CornerRadius = UDim.new(0, 8)
+IslandCorner.Parent = Island
+
+local IslandStroke = Instance.new("UIStroke")
+IslandStroke.Color = ThemeColors[Ghostz.Settings.Theme].Secondary
+IslandStroke.Thickness = 2
+IslandStroke.Parent = Island
+
+local NavBar = Instance.new("Frame")
+NavBar.Size = UDim2.new(1, -32, 0, 50)
+NavBar.Position = UDim2.new(0, 16, 0, 16)
+NavBar.BackgroundColor3 = ThemeColors[Ghostz.Settings.Theme].Nav
+NavBar.BackgroundTransparency = 0.2
+NavBar.Parent = Main
+
+local NavCorner = Instance.new("UICorner")
+NavCorner.CornerRadius = UDim.new(0, 12)
+NavCorner.Parent = NavBar
+
+local Logo = Instance.new("TextLabel")
+Logo.Size = UDim2.new(0, 120, 1, 0)
+Logo.Position = UDim2.new(0, 15, 0, 0)
+Logo.BackgroundTransparency = 1
+Logo.Text = "👻 Ghostz"
+Logo.TextColor3 = Color3.fromRGB(255, 255, 255)
+Logo.TextSize = 24
+Logo.Font = Enum.Font.GothamBlack
+Logo.Parent = NavBar
+
+local LogoAccent = Instance.new("TextLabel")
+LogoAccent.Size = UDim2.new(0, 20, 1, 0)
+LogoAccent.Position = UDim2.new(0, 125, 0, 0)
+LogoAccent.BackgroundTransparency = 1
+LogoAccent.Text = ">"
+LogoAccent.TextColor3 = ThemeColors[Ghostz.Settings.Theme].Accent
+LogoAccent.TextSize = 28
+LogoAccent.Font = Enum.Font.GothamBlack
+LogoAccent.Parent = NavBar
+
+local Arrows = Instance.new("TextLabel")
+Arrows.Size = UDim2.new(0, 120, 1, 0)
+Arrows.Position = UDim2.new(0, 150, 0, 0)
+Arrows.BackgroundTransparency = 1
+Arrows.Text = "»»»»»»"
+Arrows.TextColor3 = ThemeColors[Ghostz.Settings.Theme].Primary
+Arrows.TextSize = 24
+Arrows.Font = Enum.Font.GothamBold
+Arrows.Parent = NavBar
+
+local ContentContainer = Instance.new("Frame")
+ContentContainer.Size = UDim2.new(1, -32, 1, -82)
+ContentContainer.Position = UDim2.new(0, 16, 0, 66)
+ContentContainer.BackgroundTransparency = 1
+ContentContainer.Parent = Main
+
+-- Animation Functions
+local function OpenHub()
+    Island.Visible = false
+    Main.Visible = true
+    
+    Main.Size = UDim2.new(0, 0, 0, 0)
+    Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+    
+    local tween = TweenService:Create(Main, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 618, 0, 475),
+        Position = UDim2.new(0.5, -309, 0.45, -237)
+    })
+    tween:Play()
+    
+    CreateConfetti()
+end
+
+local function CloseHub()
+    local tween = TweenService:Create(Main, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Size = UDim2.new(0, 0, 0, 0),
+        Position = UDim2.new(0.5, 0, 0.5, 0)
+    })
+    
+    tween:Play()
+    tween.Completed:Connect(function()
+        Main.Visible = false
+        Island.Visible = true
+    end)
+end
+
+-- Store references for later use
+_G.OpenHub = OpenHub
+_G.CloseHub = CloseHub
+--[[    Ghostz Hub v0.0.30 - Section 3 of 8    ]]
+
+local function ApplyTheme(themeName)
+    local theme = ThemeColors[themeName] or ThemeColors.Purple
+    MainStroke.Color = theme.Primary
+    Island.BackgroundColor3 = theme.Primary
+    IslandStroke.Color = theme.Secondary
+    Glow.ImageColor3 = theme.Primary
+    NavBar.BackgroundColor3 = theme.Nav
+    
+    for name, btn in pairs(TabButtons) do
+        if name == Ghostz.CurrentTab then
+            btn.BackgroundColor3 = theme.Primary
+        else
+            btn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+        end
+    end
+    
+    LogoAccent.TextColor3 = theme.Accent
+    
+    if ContentFrames["Home"] then
+        local home = ContentFrames["Home"]
+        if home:FindFirstChild("WelcomeBox") then
+            local sub = home.WelcomeBox:FindFirstChild("SubTitle")
+            if sub then sub.TextColor3 = theme.Accent end
+        end
+    end
+    
+    if ContentFrames["Pages"] then
+        local pages = ContentFrames["Pages"]
+        if pages:FindFirstChild("PagesTitle") then
+            pages.PagesTitle.TextColor3 = theme.Accent
+        end
+    end
+    
+    if ContentFrames["Credits"] then
+        local credits = ContentFrames["Credits"]
+        if credits:FindFirstChild("CreditsTitle") then
+            credits.CreditsTitle.TextColor3 = theme.Accent
+        end
+    end
+end
+
+local function ApplyTransparency(value)
+    if Ghostz.Settings.UIEnabled then
+        Main.BackgroundTransparency = value
+    else
+        Main.BackgroundTransparency = 1
+    end
+end
+
+local function SwitchTab(tabName)
+    Ghostz.CurrentTab = tabName
+    local theme = ThemeColors[Ghostz.Settings.Theme]
+    for name, btn in pairs(TabButtons) do
+        if name == tabName then
+            btn.BackgroundColor3 = theme.Primary
+            btn.TextColor3 = Color3.new(1,1,1)
+        else
+            btn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+            btn.TextColor3 = Color3.fromRGB(180, 180, 180)
+        end
+    end
+    
+    for name, frame in pairs(ContentFrames) do
+        frame.Visible = (name == tabName)
+    end
+end
+
+local TabNames = {"Home", "Pages", "Credits"}
+
+for i, tabName in ipairs(TabNames) do
+    local TabBtn = Instance.new("TextButton")
+    TabBtn.Size = UDim2.new(0, 90, 0, 34)
+    TabBtn.Position = UDim2.new(0, 250 + (i-1)*100, 0.5, -17)
+    
+    if tabName == "Home" then
+        TabBtn.BackgroundColor3 = ThemeColors[Ghostz.Settings.Theme].Primary
+        TabBtn.TextColor3 = Color3.new(1,1,1)
+    else
+        TabBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+        TabBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+    end
+    
+    TabBtn.BackgroundTransparency = 0.2
+    TabBtn.Text = tabName
+    TabBtn.TextSize = 16
+    TabBtn.Font = Enum.Font.GothamBold
+    TabBtn.AutoButtonColor = false
+    TabBtn.Parent = NavBar
+    
+    local TabCorner = Instance.new("UICorner")
+    TabCorner.CornerRadius = UDim.new(0, 8)
+    TabCorner.Parent = TabBtn
+    
+    TabButtons[tabName] = TabBtn
+    
+    TabBtn.MouseButton1Click:Connect(function()
+        SwitchTab(tabName)
+    end)
+end
+
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0, 34, 0, 34)
+CloseBtn.Position = UDim2.new(1, -48, 0.5, -17)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.new(1,1,1)
+CloseBtn.TextSize = 20
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.Parent = NavBar
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 8)
+CloseCorner.Parent = CloseBtn
+
+CloseBtn.MouseButton1Click:Connect(function()
+    Main.Visible = false
+    Island.Visible = true
+end)
+
+local function CreateSection(name, titleText, accentColor)
+    local Section = Instance.new("Frame")
+    Section.Name = name
+    Section.Size = UDim2.new(1, 0, 1, 0)
+    Section.BackgroundTransparency = 1
+    Section.Visible = false
+    Section.Parent = ContentContainer
+    ContentFrames[name] = Section
+    
+    local Header = Instance.new("Frame")
+    Header.Size = UDim2.new(1, 0, 0, 50)
+    Header.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+    Header.BackgroundTransparency = 0.5
+    Header.Parent = Section
+    
+    local HeaderCorner = Instance.new("UICorner")
+    HeaderCorner.CornerRadius = UDim.new(0, 10)
+    HeaderCorner.Parent = Header
+    
+    local BackBtn = Instance.new("TextButton")
+    BackBtn.Size = UDim2.new(0, 80, 0, 36)
+    BackBtn.Position = UDim2.new(0, 10, 0.5, -18)
+    BackBtn.BackgroundColor3 = accentColor
+    BackBtn.Text = GetText("Back")
+    BackBtn.TextColor3 = Color3.new(1,1,1)
+    BackBtn.TextSize = 16
+    BackBtn.Font = Enum.Font.GothamBold
+    BackBtn.Parent = Header
+    table.insert(UILabels, {Label = BackBtn, Key = "Back"})
+    
+    local BackCorner = Instance.new("UICorner")
+    BackCorner.CornerRadius = UDim.new(0, 8)
+    BackCorner.Parent = BackBtn
+    
+    local Title = Instance.new("TextLabel")
+    Title.Size = UDim2.new(0, 300, 1, 0)
+    Title.Position = UDim2.new(0.5, -150, 0, 0)
+    Title.BackgroundTransparency = 1
+    Title.Text = titleText
+    Title.TextColor3 = accentColor
+    Title.TextSize = 24
+    Title.Font = Enum.Font.GothamBold
+    Title.Parent = Header
+    
+    local Content = Instance.new("ScrollingFrame")
+    Content.Name = "Content"
+    Content.Size = UDim2.new(1, 0, 1, -60)
+    Content.Position = UDim2.new(0, 0, 0, 60)
+    Content.BackgroundTransparency = 1
+    Content.BorderSizePixel = 0
+    Content.ScrollBarThickness = 0
+    Content.CanvasSize = UDim2.new(0, 0, 0, 400)
+    Content.Parent = Section
+    
+    BackBtn.MouseButton1Click:Connect(function()
+        Section.Visible = false
+        ContentFrames["Home"].Visible = true
+        SwitchTab("Home")
+    end)
+    
+    return Section, Content
+end
+--[[    Ghostz Hub v0.0.30 - Section 4 of 8    ]]
+
+local HomeFrame = Instance.new("ScrollingFrame")
+HomeFrame.Name = "Home"
+HomeFrame.Size = UDim2.new(1, 0, 1, 0)
+HomeFrame.BackgroundTransparency = 1
+HomeFrame.Visible = true
+HomeFrame.BorderSizePixel = 0
+HomeFrame.ScrollBarThickness = 0
+HomeFrame.CanvasSize = UDim2.new(0, 0, 0, 350)
+HomeFrame.Parent = ContentContainer
+ContentFrames["Home"] = HomeFrame
+
+local WelcomeBox = Instance.new("Frame")
+WelcomeBox.Name = "WelcomeBox"
+WelcomeBox.Size = UDim2.new(1, 0, 0, 220)
+WelcomeBox.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+WelcomeBox.BackgroundTransparency = 0.3
+WelcomeBox.Parent = HomeFrame
+
+local WelcomeCorner = Instance.new("UICorner")
+WelcomeCorner.CornerRadius = UDim.new(0, 12)
+WelcomeCorner.Parent = WelcomeBox
+
+local WelcomeTitle = Instance.new("TextLabel")
+WelcomeTitle.Size = UDim2.new(1, 0, 0, 40)
+WelcomeTitle.Position = UDim2.new(0, 0, 0, 40)
+WelcomeTitle.BackgroundTransparency = 1
+WelcomeTitle.Text = GetText("Welcome")
+WelcomeTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+WelcomeTitle.TextSize = 36
+WelcomeTitle.Font = Enum.Font.GothamBold
+WelcomeTitle.Parent = WelcomeBox
+table.insert(UILabels, {Label = WelcomeTitle, Key = "Welcome"})
+
+local SubTitle = Instance.new("TextLabel")
+SubTitle.Name = "SubTitle"
+SubTitle.Size = UDim2.new(1, 0, 0, 50)
+SubTitle.Position = UDim2.new(0, 0, 0, 80)
+SubTitle.BackgroundTransparency = 1
+SubTitle.Text = GetText("GhostzHub")
+SubTitle.TextColor3 = ThemeColors[Ghostz.Settings.Theme].Accent
+SubTitle.TextSize = 48
+SubTitle.Font = Enum.Font.GothamBlack
+SubTitle.Parent = WelcomeBox
+
+local CardContainer = Instance.new("Frame")
+CardContainer.Size = UDim2.new(1, 0, 0, 130)
+CardContainer.Position = UDim2.new(0, 0, 0, 220)
+CardContainer.BackgroundTransparency = 1
+CardContainer.Parent = HomeFrame
+
+local CardLayout = Instance.new("UIGridLayout")
+CardLayout.CellSize = UDim2.new(0.32, 0, 1, 0)
+CardLayout.CellPadding = UDim2.new(0.02, 0, 0, 0)
+CardLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+CardLayout.Parent = CardContainer
+
+local function CreateCard(title, desc, icon, color, sectionName, titleKey, descKey)
+    local Card = Instance.new("TextButton")
+    Card.Size = UDim2.new(1, 0, 1, 0)
+    Card.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    Card.Text = ""
+    Card.AutoButtonColor = false
+    Card.Parent = CardContainer
+    
+    local CardCorner = Instance.new("UICorner")
+    CardCorner.CornerRadius = UDim.new(0, 12)
+    CardCorner.Parent = Card
+    
+    local IconBg = Instance.new("Frame")
+    IconBg.Size = UDim2.new(0, 50, 0, 50)
+    IconBg.Position = UDim2.new(0, 15, 0.5, -25)
+    IconBg.BackgroundColor3 = color
+    IconBg.Parent = Card
+    
+    local IconCorner = Instance.new("UICorner")
+    IconCorner.CornerRadius = UDim.new(0, 12)
+    IconCorner.Parent = IconBg
+    
+    local IconLabel = Instance.new("TextLabel")
+    IconLabel.Size = UDim2.new(1, 0, 1, 0)
+    IconLabel.BackgroundTransparency = 1
+    IconLabel.Text = icon
+    IconLabel.TextColor3 = Color3.new(1,1,1)
+    IconLabel.TextSize = 28
+    IconLabel.Font = Enum.Font.GothamBold
+    IconLabel.Parent = IconBg
+    
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Size = UDim2.new(0, 150, 0, 30)
+    TitleLabel.Position = UDim2.new(0, 75, 0, 25)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Text = title
+    TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TitleLabel.TextSize = 22
+    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TitleLabel.Parent = Card
+    if titleKey then table.insert(UILabels, {Label = TitleLabel, Key = titleKey}) end
+    
+    local DescLabel = Instance.new("TextLabel")
+    DescLabel.Size = UDim2.new(0, 150, 0, 40)
+    DescLabel.Position = UDim2.new(0, 75, 0, 55)
+    DescLabel.BackgroundTransparency = 1
+    DescLabel.Text = desc
+    DescLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+    DescLabel.TextSize = 14
+    DescLabel.Font = Enum.Font.Gotham
+    DescLabel.TextXAlignment = Enum.TextXAlignment.Left
+    DescLabel.TextWrapped = true
+    DescLabel.Parent = Card
+    if descKey then table.insert(UILabels, {Label = DescLabel, Key = descKey}) end
+    
+    local Section, Content = CreateSection(sectionName, title, color)
+    
+    Card.MouseButton1Click:Connect(function()
+        HomeFrame.Visible = false
+        Section.Visible = true
+        for _, btn in pairs(TabButtons) do
+            btn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+            btn.TextColor3 = Color3.fromRGB(180, 180, 180)
+        end
+    end)
+    
+    return Section, Content
+end
+
+local ConfigSection, ConfigContent = CreateCard("Config", GetText("Config"), "🔧", Color3.fromRGB(147, 51, 234), "Config", "Config", "SetupScripts")
+local FeaturesSection, FeaturesContent = CreateCard("Features", GetText("Features"), "⚡", Color3.fromRGB(220, 50, 50), "Features", "Features", "ESPTeleport")
+local SettingsMain, SettingsContent = CreateCard("Settings", GetText("Settings"), "⚙️", Color3.fromRGB(100, 50, 200), "SettingsMain", "Settings", "Customize")
+
+local SettingsGrid = Instance.new("UIGridLayout")
+SettingsGrid.CellSize = UDim2.new(0.48, 0, 0.45, 0)
+SettingsGrid.CellPadding = UDim2.new(0.04, 0, 0.1, 0)
+SettingsGrid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+SettingsGrid.VerticalAlignment = Enum.VerticalAlignment.Center
+SettingsGrid.Parent = SettingsContent
+
+local settingsData = {
+    {name = GetText("Webhook"), desc = GetText("TrackInfo"), icon = "💬", color = Color3.fromRGB(88, 101, 242), section = "Webhook", nameKey = "Webhook", descKey = "TrackInfo"},
+    {name = GetText("GameSetting"), desc = GetText("ControlLight"), icon = "🌍", color = Color3.fromRGB(50, 150, 50), section = "GameSettings", nameKey = "GameSetting", descKey = "ControlLight"},
+    {name = GetText("ScriptSetting"), desc = GetText("SaveLoadReset"), icon = "📜", color = Color3.fromRGB(200, 150, 50), section = "ScriptSettings", nameKey = "ScriptSetting", descKey = "SaveLoadReset"},
+    {name = GetText("Servers"), desc = GetText("JoinShare"), icon = "🖥️", color = Color3.fromRGB(100, 100, 200), section = "Servers", nameKey = "Servers", descKey = "JoinShare"}
+}
+
+for _, data in ipairs(settingsData) do
+    local Card = Instance.new("TextButton")
+    Card.Size = UDim2.new(1, 0, 1, 0)
+    Card.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+    Card.Text = ""
+    Card.AutoButtonColor = false
+    Card.Parent = SettingsContent
+    
+    local CardCorner2 = Instance.new("UICorner")
+    CardCorner2.CornerRadius = UDim.new(0, 12)
+    CardCorner2.Parent = Card
+    
+    local IconBg = Instance.new("Frame")
+    IconBg.Size = UDim2.new(0, 60, 0, 60)
+    IconBg.Position = UDim2.new(1, -75, 0.5, -30)
+    IconBg.BackgroundColor3 = data.color
+    IconBg.Parent = Card
+    
+    local IconCorner2 = Instance.new("UICorner")
+    IconCorner2.CornerRadius = UDim.new(0, 30)
+    IconCorner2.Parent = IconBg
+    
+    local IconLabel = Instance.new("TextLabel")
+    IconLabel.Size = UDim2.new(1, 0, 1, 0)
+    IconLabel.BackgroundTransparency = 1
+    IconLabel.Text = data.icon
+    IconLabel.TextSize = 32
+    IconLabel.Parent = IconBg
+    
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Size = UDim2.new(0, 200, 0, 30)
+    TitleLabel.Position = UDim2.new(0, 20, 0, 20)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Text = data.name
+    TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TitleLabel.TextSize = 24
+    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TitleLabel.Parent = Card
+    if data.nameKey then table.insert(UILabels, {Label = TitleLabel, Key = data.nameKey}) end
+    
+    local DescLabel = Instance.new("TextLabel")
+    DescLabel.Size = UDim2.new(0, 200, 0, 40)
+    DescLabel.Position = UDim2.new(0, 20, 0, 55)
+    DescLabel.BackgroundTransparency = 1
+    DescLabel.Text = data.desc
+    DescLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+    DescLabel.TextSize = 14
+    DescLabel.Font = Enum.Font.Gotham
+    DescLabel.TextXAlignment = Enum.TextXAlignment.Left
+    DescLabel.TextWrapped = true
+    DescLabel.Parent = Card
+    if data.descKey then table.insert(UILabels, {Label = DescLabel, Key = data.descKey}) end
+    
+    local SubSection, SubContent = CreateSection(data.section, data.name, data.color)
+    
+    Card.MouseButton1Click:Connect(function()
+        SettingsMain.Visible = false
+        SubSection.Visible = true
+    end)
+end
+--[[    Ghostz Hub v0.0.30 - Section 5 of 8    ]]
+
+local ScriptSection = ContentFrames["ScriptSettings"]
+local ScriptContent = ScriptSection:WaitForChild("Content")
+
+local function CreateSettingCard(name, pos, size, title)
+    local Card = Instance.new("Frame")
+    Card.Name = name
+    Card.Size = size or UDim2.new(0, 340, 0, 90)
+    Card.Position = pos
+    Card.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+    Card.BackgroundTransparency = 0.3
+    Card.ZIndex = 10
+    Card.Parent = ScriptContent
+    
+    local CardCorner = Instance.new("UICorner")
+    CardCorner.CornerRadius = UDim.new(0, 10)
+    CardCorner.Parent = Card
+    
+    local CardStroke = Instance.new("UIStroke")
+    CardStroke.Color = Color3.fromRGB(60, 60, 70)
+    CardStroke.Thickness = 1
+    CardStroke.Parent = Card
+    
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Size = UDim2.new(1, -20, 0, 25)
+    TitleLabel.Position = UDim2.new(0, 10, 0, 8)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Text = title
+    TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TitleLabel.TextSize = 18
+    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TitleLabel.Parent = Card
+    
+    return Card, TitleLabel
+end
+
+local LangCard, LangTitle = CreateSettingCard("LangCard", UDim2.new(0, 10, 0, 10), UDim2.new(0, 340, 0, 90), GetText("ScriptLanguage"))
+
+local LangDropdown = Instance.new("TextButton")
+LangDropdown.Size = UDim2.new(0, 320, 0, 40)
+LangDropdown.Position = UDim2.new(0, 10, 0, 40)
+LangDropdown.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+LangDropdown.Text = Ghostz.Settings.Language .. " ▼"
+LangDropdown.TextColor3 = Color3.fromRGB(200, 200, 200)
+LangDropdown.TextSize = 16
+LangDropdown.Font = Enum.Font.Gotham
+LangDropdown.Parent = LangCard
+
+local LangDropCorner = Instance.new("UICorner")
+LangDropCorner.CornerRadius = UDim.new(0, 8)
+LangDropCorner.Parent = LangDropdown
+
+local LangFrame = Instance.new("Frame")
+LangFrame.Size = UDim2.new(0, 150, 0, 160)
+LangFrame.Position = UDim2.new(1, 10, 0, 0)
+LangFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+LangFrame.Visible = false
+LangFrame.ZIndex = 100
+LangFrame.Parent = LangCard
+
+local LangFrameCorner = Instance.new("UICorner")
+LangFrameCorner.CornerRadius = UDim.new(0, 8)
+LangFrameCorner.Parent = LangFrame
+
+local LangList = Instance.new("UIListLayout")
+LangList.Padding = UDim.new(0, 2)
+LangList.Parent = LangFrame
+
+local ThemeCard, ThemeTitle = CreateSettingCard("ThemeCard", UDim2.new(0, 10, 0, 110), UDim2.new(0, 340, 0, 90), GetText("Theme"))
+
+local ThemeDropdown = Instance.new("TextButton")
+ThemeDropdown.Size = UDim2.new(0, 320, 0, 40)
+ThemeDropdown.Position = UDim2.new(0, 10, 0, 40)
+ThemeDropdown.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+ThemeDropdown.Text = Ghostz.Settings.Theme .. " ▼"
+ThemeDropdown.TextColor3 = Color3.fromRGB(200, 200, 200)
+ThemeDropdown.TextSize = 16
+ThemeDropdown.Font = Enum.Font.Gotham
+ThemeDropdown.Parent = ThemeCard
+
+local ThemeDropCorner = Instance.new("UICorner")
+ThemeDropCorner.CornerRadius = UDim.new(0, 8)
+ThemeDropCorner.Parent = ThemeDropdown
+
+local ThemeFrame = Instance.new("Frame")
+ThemeFrame.Size = UDim2.new(0, 150, 0, 280)
+ThemeFrame.Position = UDim2.new(1, 10, 0, 0)
+ThemeFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+ThemeFrame.Visible = false
+ThemeFrame.ZIndex = 100
+ThemeFrame.Parent = ThemeCard
+
+local ThemeFrameCorner = Instance.new("UICorner")
+ThemeFrameCorner.CornerRadius = UDim.new(0, 8)
+ThemeFrameCorner.Parent = ThemeFrame
+
+local ThemeList = Instance.new("UIListLayout")
+ThemeList.Padding = UDim.new(0, 2)
+ThemeList.Parent = ThemeFrame
+
+local TransCard, TransTitle = CreateSettingCard("TransCard", UDim2.new(0, 10, 0, 210), UDim2.new(0, 340, 0, 80), GetText("Transparency") .. ": " .. string.format("%.2f", Ghostz.Settings.BackgroundTransparency))
+
+local TransTrack = Instance.new("Frame")
+TransTrack.Size = UDim2.new(0, 320, 0, 12)
+TransTrack.Position = UDim2.new(0, 10, 0, 45)
+TransTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+TransTrack.Parent = TransCard
+
+local TransTrackCorner = Instance.new("UICorner")
+TransTrackCorner.CornerRadius = UDim.new(0, 6)
+TransTrackCorner.Parent = TransTrack
+
+local TransFill = Instance.new("Frame")
+TransFill.Size = UDim2.new(Ghostz.Settings.BackgroundTransparency, 0, 1, 0)
+TransFill.BackgroundColor3 = ThemeColors[Ghostz.Settings.Theme].Primary
+TransFill.Parent = TransTrack
+
+local TransFillCorner = Instance.new("UICorner")
+TransFillCorner.CornerRadius = UDim.new(0, 6)
+TransFillCorner.Parent = TransFill
+
+local TransKnob = Instance.new("TextButton")
+TransKnob.Size = UDim2.new(0, 20, 0, 20)
+TransKnob.Position = UDim2.new(Ghostz.Settings.BackgroundTransparency, -10, 0.5, -10)
+TransKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TransKnob.Text = ""
+TransKnob.Parent = TransTrack
+
+local TransKnobCorner = Instance.new("UICorner")
+TransKnobCorner.CornerRadius = UDim.new(1, 0)
+TransKnobCorner.Parent = TransKnob
+
+local ToggleCard = CreateSettingCard("ToggleCard", UDim2.new(0, 10, 0, 300), UDim2.new(0, 340, 0, 60), "")
+ToggleCard.Size = UDim2.new(0, 340, 0, 60)
+
+local EnableLabel = Instance.new("TextLabel")
+EnableLabel.Size = UDim2.new(0, 250, 0, 30)
+EnableLabel.Position = UDim2.new(0, 10, 0.5, -15)
+EnableLabel.BackgroundTransparency = 1
+EnableLabel.Text = GetText("EnableUI")
+EnableLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+EnableLabel.TextSize = 18
+EnableLabel.Font = Enum.Font.GothamBold
+EnableLabel.TextXAlignment = Enum.TextXAlignment.Left
+EnableLabel.Parent = ToggleCard
+
+local EnableToggle = Instance.new("TextButton")
+EnableToggle.Size = UDim2.new(0, 50, 0, 26)
+EnableToggle.Position = UDim2.new(1, -60, 0.5, -13)
+EnableToggle.BackgroundColor3 = Ghostz.Settings.UIEnabled and ThemeColors[Ghostz.Settings.Theme].Primary or Color3.fromRGB(60, 60, 70)
+EnableToggle.Text = ""
+EnableToggle.AutoButtonColor = false
+EnableToggle.Parent = ToggleCard
+
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(0, 13)
+ToggleCorner.Parent = EnableToggle
+
+local ToggleCircle = Instance.new("Frame")
+ToggleCircle.Size = UDim2.new(0, 22, 0, 22)
+ToggleCircle.Position = Ghostz.Settings.UIEnabled and UDim2.new(1, -24, 0.5, -11) or UDim2.new(0, 2, 0.5, -11)
+ToggleCircle.BackgroundColor3 = Color3.new(1, 1, 1)
+ToggleCircle.Parent = EnableToggle
+
+local ToggleCircleCorner = Instance.new("UICorner")
+ToggleCircleCorner.CornerRadius = UDim.new(1, 0)
+ToggleCircleCorner.Parent = ToggleCircle
+
+local function CreateActionButton(text, posY, color, key)
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.new(0, 180, 0, 35)
+    Btn.Position = UDim2.new(1, -190, 0, posY)
+    Btn.BackgroundColor3 = color
+    Btn.Text = text
+    Btn.TextColor3 = Color3.new(1,1,1)
+    Btn.TextSize = 16
+    Btn.Font = Enum.Font.GothamBold
+    Btn.ZIndex = 5
+    Btn.Parent = ScriptContent
+    if key then table.insert(UILabels, {Label = Btn, Key = key}) end
+    
+    local BtnCorner = Instance.new("UICorner")
+    BtnCorner.CornerRadius = UDim.new(0, 10)
+    BtnCorner.Parent = Btn
+    --[[    Ghostz Hub v0.0.30 - Section 6 of 8    ]]
+
+local languages = {"English", "Chinese", "Japanese", "Russian"}
+for _, lang in ipairs(languages) do
+    local LangBtn = Instance.new("TextButton")
+    LangBtn.Size = UDim2.new(1, -10, 0, 35)
+    LangBtn.Position = UDim2.new(0, 5, 0, 0)
+    LangBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+    LangBtn.Text = lang
+    LangBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    LangBtn.TextSize = 16
+    LangBtn.Font = Enum.Font.Gotham
+    LangBtn.ZIndex = 101
+    LangBtn.Parent = LangFrame
+    
+    local LangBtnCorner = Instance.new("UICorner")
+    LangBtnCorner.CornerRadius = UDim.new(0, 6)
+    LangBtnCorner.Parent = LangBtn
+    
+    LangBtn.MouseButton1Click:Connect(function()
+        Ghostz.Settings.Language = lang
+        LangDropdown.Text = lang .. " ▼"
+        LangFrame.Visible = false
+        for _, item in ipairs(UILabels) do
+            if item.Label and item.Key then
+                item.Label.Text = GetText(item.Key)
+            end
+        end
+        LangTitle.Text = GetText("ScriptLanguage")
+        SaveSettings()
+    end)
+end
+
+LangDropdown.MouseButton1Click:Connect(function()
+    LangFrame.Visible = not LangFrame.Visible
+    ThemeFrame.Visible = false
+end)
+
+local themes = {"Purple", "Red", "Blue", "Green", "Gold", "Pink", "Dark", "Light"}
+for _, theme in ipairs(themes) do
+    local ThemeBtn = Instance.new("TextButton")
+    ThemeBtn.Size = UDim2.new(1, -10, 0, 32)
+    ThemeBtn.Position = UDim2.new(0, 5, 0, 0)
+    ThemeBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+    ThemeBtn.Text = theme
+    ThemeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ThemeBtn.TextSize = 16
+    ThemeBtn.Font = Enum.Font.Gotham
+    ThemeBtn.ZIndex = 101
+    ThemeBtn.Parent = ThemeFrame
+    
+    local ThemeBtnCorner = Instance.new("UICorner")
+    ThemeBtnCorner.CornerRadius = UDim.new(0, 6)
+    ThemeBtnCorner.Parent = ThemeBtn
+    
+    ThemeBtn.MouseButton1Click:Connect(function()
+        Ghostz.Settings.Theme = theme
+        ThemeDropdown.Text = theme .. " ▼"
+        ThemeFrame.Visible = false
+        ThemeTitle.Text = GetText("Theme") .. ": " .. theme
+        ApplyTheme(theme)
+        TransFill.BackgroundColor3 = ThemeColors[theme].Primary
+        SaveBtn.BackgroundColor3 = ThemeColors[theme].Primary
+        ResetBtn.BackgroundColor3 = Color3.fromRGB(
+            math.max(ThemeColors[theme].Primary.R * 255 - 20, 0),
+            math.max(ThemeColors[theme].Primary.G * 255 - 20, 0),
+            math.max(ThemeColors[theme].Primary.B * 255 - 20, 0)
+        )
+        ExportBtn.BackgroundColor3 = Color3.fromRGB(
+            math.max(ThemeColors[theme].Primary.R * 255 - 40, 0),
+            math.max(ThemeColors[theme].Primary.G * 255 - 40, 0),
+            math.max(ThemeColors[theme].Primary.B * 255 - 40, 0)
+        )
+        SaveSettings()
+    end)
+end
+
+ThemeDropdown.MouseButton1Click:Connect(function()
+    ThemeFrame.Visible = not ThemeFrame.Visible
+    LangFrame.Visible = false
+end)
+
+local sliderDragging = false
+local sliderConnection = nil
+
+local function UpdateSlider(input)
+    local relativeX = input.Position.X - TransTrack.AbsolutePosition.X
+    local scale = math.clamp(relativeX / TransTrack.AbsoluteSize.X, 0, 1)
+    
+    Ghostz.Settings.BackgroundTransparency = scale
+    TransFill.Size = UDim2.new(scale, 0, 1, 0)
+    TransKnob.Position = UDim2.new(scale, -10, 0.5, -10)
+    TransTitle.Text = GetText("Transparency") .. ": " .. string.format("%.2f", scale)
+    ApplyTransparency(scale)
+    SaveSettings()
+end
+
+TransKnob.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        sliderDragging = true
+        
+        if sliderConnection then sliderConnection:Disconnect() end
+        sliderConnection = UserInputService.InputChanged:Connect(function(changedInput)
+            if sliderDragging and (changedInput.UserInputType == Enum.UserInputType.MouseMovement or changedInput.UserInputType == Enum.UserInputType.Touch) then
+                UpdateSlider(changedInput)
+            end
+        end)
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        sliderDragging = false
+        if sliderConnection then
+            sliderConnection:Disconnect()
+            sliderConnection = nil
+        end
+    end
+end)
+
+TransTrack.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        UpdateSlider(input)
+    end
+end)
+
+EnableToggle.MouseButton1Click:Connect(function()
+    Ghostz.Settings.UIEnabled = not Ghostz.Settings.UIEnabled
+    SaveSettings()
+    
+    if Ghostz.Settings.UIEnabled then
+        EnableToggle.BackgroundColor3 = ThemeColors[Ghostz.Settings.Theme].Primary
+        ToggleCircle:TweenPosition(UDim2.new(1, -24, 0.5, -11), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+        Main.BackgroundTransparency = Ghostz.Settings.BackgroundTransparency
+    else
+        EnableToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+        ToggleCircle:TweenPosition(UDim2.new(0, 2, 0.5, -11), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+        Main.BackgroundTransparency = 1
+    end
+end)
+
+SaveBtn.MouseButton1Click:Connect(function()
+    SaveSettings()
+    SaveBtn.Text = GetText("Saved")
+    wait(1)
+    SaveBtn.Text = GetText("SaveSettings")
+end)
+
+ResetBtn.MouseButton1Click:Connect(function()
+    Ghostz.Settings = {Language = "English", Webhook = "", BackgroundID = "", Theme = "Purple", BackgroundTransparency = 0.05, UIEnabled = true}
+    SaveSettings()
+    LangDropdown.Text = "English ▼"
+    ThemeDropdown.Text = "Purple ▼"
+    ApplyTheme("Purple")
+    ApplyTransparency(0.05)
+    TransFill.Size = UDim2.new(0.05, 0, 1, 0)
+    TransKnob.Position = UDim2.new(0.05, -10, 0.5, -10)
+    TransTitle.Text = GetText("Transparency") .. ": 0.05"
+    EnableToggle.BackgroundColor3 = ThemeColors.Purple.Primary
+    ToggleCircle.Position = UDim2.new(1, -24, 0.5, -11)
+    Main.BackgroundTransparency = 0.05
+    SaveBtn.BackgroundColor3 = Color3.fromRGB(147, 51, 234)
+    ResetBtn.BackgroundColor3 = Color3.fromRGB(126, 34, 206)
+    ExportBtn.BackgroundColor3 = Color3.fromRGB(109, 40, 217)
+    ResetBtn.Text = GetText("Reset")
+    wait(1)
+    ResetBtn.Text = GetText("ResetSettings")
+end)
+
+ExportBtn.MouseButton1Click:Connect(function()
+    local json = HttpService:JSONEncode(Ghostz.Settings)
+    setclipboard(json)
+    ExportBtn.Text = GetText("Copied")
+    wait(1)
+    ExportBtn.Text = GetText("ExportConfig")
+end)
+
+ScriptContent.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        local pos = input.Position
+        
+        if LangFrame.Visible then
+            local absPos = LangFrame.AbsolutePosition
+            local absSize = LangFrame.AbsoluteSize
+            local onButton = (pos.X >= LangDropdown.AbsolutePosition.X and pos.X <= LangDropdown.AbsolutePosition.X + LangDropdown.AbsoluteSize.X and
+                             pos.Y >= LangDropdown.AbsolutePosition.Y and pos.Y <= LangDropdown.AbsolutePosition.Y + LangDropdown.AbsoluteSize.Y)
+            if not onButton and (pos.X < absPos.X or pos.X > absPos.X + absSize.X or pos.Y < absPos.Y or pos.Y > absPos.Y + absSize.Y) then
+                LangFrame.Visible = false
+            end
+        end
+        
+        if ThemeFrame.Visible then
+            local absPos = ThemeFrame.AbsolutePosition
+            local absSize = ThemeFrame.AbsoluteSize
+            local onButton = (pos.X >= ThemeDropdown.AbsolutePosition.X and pos.X <= ThemeDropdown.AbsolutePosition.X + ThemeDropdown.AbsoluteSize.X and
+                             pos.Y >= ThemeDropdown.AbsolutePosition.Y and pos.Y <= ThemeDropdown.AbsolutePosition.Y + ThemeDropdown.AbsoluteSize.Y)
+            if not onButton and (pos.X < absPos.X or pos.X > absPos.X + absSize.X or pos.Y < absPos.Y or pos.Y > absPos.Y + absSize.Y) then
+                ThemeFrame.Visible = false
+            end
+        end
+    end
+end)
+
+    return Btn
+end
+
+local SaveBtn = CreateActionButton(GetText("SaveSettings"), 10, Color3.fromRGB(147, 51, 234), "SaveSettings")
+local ResetBtn = CreateActionButton(GetText("ResetSettings"), 50, Color3.fromRGB(126, 34, 206), "ResetSettings")
+local ExportBtn = CreateActionButton(GetText("ExportConfig"), 90, Color3.fromRGB(109, 40, 217), "ExportConfig")
+--[[    Ghostz Hub v0.0.30 - Section 7 of 8    ]]
+
+local ServersSection = ContentFrames["Servers"]
+local ServersContent = ServersSection:WaitForChild("Content")
+ServersContent.CanvasSize = UDim2.new(0, 0, 0, 350)
+
+local ServerInfoCard = Instance.new("Frame")
+ServerInfoCard.Size = UDim2.new(0, 320, 0, 160)
+ServerInfoCard.Position = UDim2.new(0, 20, 0, 20)
+ServerInfoCard.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+ServerInfoCard.BackgroundTransparency = 0.3
+ServerInfoCard.Parent = ServersContent
+
+local InfoCorner = Instance.new("UICorner")
+InfoCorner.CornerRadius = UDim.new(0, 10)
+InfoCorner.Parent = ServerInfoCard
+
+local InfoStroke = Instance.new("UIStroke")
+InfoStroke.Color = Color3.fromRGB(60, 60, 70)
+InfoStroke.Thickness = 1
+InfoStroke.Parent = ServerInfoCard
+
+local InfoTitle = Instance.new("TextLabel")
+InfoTitle.Size = UDim2.new(1, -20, 0, 25)
+InfoTitle.Position = UDim2.new(0, 10, 0, 10)
+InfoTitle.BackgroundTransparency = 1
+InfoTitle.Text = "Server Information"
+InfoTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+InfoTitle.TextSize = 18
+InfoTitle.Font = Enum.Font.GothamBold
+InfoTitle.TextXAlignment = Enum.TextXAlignment.Left
+InfoTitle.Parent = ServerInfoCard
+
+local PlayersLabel = Instance.new("TextLabel")
+PlayersLabel.Size = UDim2.new(1, -20, 0, 22)
+PlayersLabel.Position = UDim2.new(0, 10, 0, 40)
+PlayersLabel.BackgroundTransparency = 1
+PlayersLabel.Text = "Players: Loading..."
+PlayersLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+PlayersLabel.TextSize = 14
+PlayersLabel.Font = Enum.Font.Gotham
+PlayersLabel.TextXAlignment = Enum.TextXAlignment.Left
+PlayersLabel.Parent = ServerInfoCard
+
+local JobIdLabel = Instance.new("TextLabel")
+JobIdLabel.Size = UDim2.new(1, -20, 0, 22)
+JobIdLabel.Position = UDim2.new(0, 10, 0, 65)
+JobIdLabel.BackgroundTransparency = 1
+JobIdLabel.Text = "JobId: " .. string.sub(game.JobId, 1, 12) .. "..."
+JobIdLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+JobIdLabel.TextSize = 14
+JobIdLabel.Font = Enum.Font.Gotham
+JobIdLabel.TextXAlignment = Enum.TextXAlignment.Left
+JobIdLabel.Parent = ServerInfoCard
+
+local UptimeLabel = Instance.new("TextLabel")
+UptimeLabel.Size = UDim2.new(1, -20, 0, 22)
+UptimeLabel.Position = UDim2.new(0, 10, 0, 90)
+UptimeLabel.BackgroundTransparency = 1
+UptimeLabel.Text = "Uptime: N/A"
+UptimeLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+UptimeLabel.TextSize = 14
+UptimeLabel.Font = Enum.Font.Gotham
+UptimeLabel.TextXAlignment = Enum.TextXAlignment.Left
+UptimeLabel.Parent = ServerInfoCard
+
+local RegionLabel = Instance.new("TextLabel")
+RegionLabel.Size = UDim2.new(1, -20, 0, 22)
+RegionLabel.Position = UDim2.new(0, 10, 0, 115)
+RegionLabel.BackgroundTransparency = 1
+RegionLabel.Text = "Region: Auto"
+RegionLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+RegionLabel.TextSize = 14
+RegionLabel.Font = Enum.Font.Gotham
+RegionLabel.TextXAlignment = Enum.TextXAlignment.Left
+RegionLabel.Parent = ServerInfoCard
+
+local RefreshBtn = Instance.new("TextButton")
+RefreshBtn.Size = UDim2.new(0, 80, 0, 26)
+RefreshBtn.Position = UDim2.new(1, -90, 0, 10)
+RefreshBtn.BackgroundColor3 = Color3.fromRGB(147, 51, 234)
+RefreshBtn.Text = "Refresh"
+RefreshBtn.TextColor3 = Color3.new(1,1,1)
+RefreshBtn.TextSize = 12
+RefreshBtn.Font = Enum.Font.GothamBold
+RefreshBtn.Parent = ServerInfoCard
+
+local RefreshCorner = Instance.new("UICorner")
+RefreshCorner.CornerRadius = UDim.new(0, 6)
+RefreshCorner.Parent = RefreshBtn
+
+local function UpdateServerInfo()
+    local currentPlayers = #Players:GetPlayers()
+    local maxPlayers = Players.MaxPlayers
+    PlayersLabel.Text = "Players: " .. currentPlayers .. " / " .. maxPlayers
+    
+    spawn(function()
+        local success, result = pcall(function()
+            local url = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
+            local response = game:HttpGet(url)
+            local data = HttpService:JSONDecode(response)
+            if data and data.data then
+                for _, server in ipairs(data.data) do
+                    if server.id == game.JobId then
+                        PlayersLabel.Text = "Players: " .. server.playing .. " / " .. server.maxPlayers
+                        if server.region then
+                            RegionLabel.Text = "Region: " .. server.region
+                        end
+                        if server.ping then
+                            UptimeLabel.Text = "Ping: " .. math.floor(server.ping) .. "ms"
+                        end
+                        break
+                    end
+                end
+            end
+        end)
+    end)
+end
+
+RefreshBtn.MouseButton1Click:Connect(UpdateServerInfo)
+UpdateServerInfo()
+
+spawn(function()
+    while wait(10) do
+        if ServersContent.Parent and ServersContent.Parent.Visible then
+            UpdateServerInfo()
+        end
+    end
+end)
+
+local ButtonsFrame = Instance.new("Frame")
+ButtonsFrame.Size = UDim2.new(0, 200, 0, 105)
+ButtonsFrame.Position = UDim2.new(1, -220, 0, 20)
+ButtonsFrame.BackgroundTransparency = 1
+ButtonsFrame.Parent = ServersContent
+
+local ButtonsLayout = Instance.new("UIListLayout")
+ButtonsLayout.Padding = UDim.new(0, 8)
+ButtonsLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+ButtonsLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+ButtonsLayout.Parent = ButtonsFrame
+
+local function CreateActionBtn(text, color, callback)
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.new(1, 0, 0, 28)
+    Btn.BackgroundColor3 = color
+    Btn.Text = text
+    Btn.TextColor3 = Color3.new(1,1,1)
+    Btn.TextSize = 14
+    Btn.Font = Enum.Font.GothamBold
+    Btn.Parent = ButtonsFrame
+    
+    local BtnCorner = Instance.new("UICorner")
+    BtnCorner.CornerRadius = UDim.new(0, 8)
+    BtnCorner.Parent = Btn
+    
+    Btn.MouseButton1Click:Connect(callback)
+    return Btn
+end
+
+CreateActionBtn("Rejoin Server", Color3.fromRGB(147, 51, 234), function()
+    TeleportService:Teleport(game.PlaceId, LocalPlayer)
+end)
+
+CreateActionBtn("Hop Server", Color3.fromRGB(126, 34, 206), function()
+    local success, err = pcall(function()
+        local url = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
+        local result = game:HttpGet(url)
+        local data = HttpService:JSONDecode(result)
+        
+        if data and data.data then
+            local servers = {}
+            for _, server in ipairs(data.data) do
+                if server.playing < server.maxPlayers and server.id ~= game.JobId then
+                    table.insert(servers, server)
+                end
+            end
+            
+            if #servers > 0 then
+                local randomServer = servers[math.random(1, #servers)]
+                TeleportService:TeleportToPlaceInstance(game.PlaceId, randomServer.id, LocalPlayer)
+            else
+                warn("No available servers found")
+            end
+        end
+    end)
+    
+    if not success then
+        warn("Failed to hop server: " .. tostring(err))
+    end
+end)
+
+CreateActionBtn("Low Server Hop", Color3.fromRGB(109, 40, 217), function()
+    local success, err = pcall(function()
+        local url = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
+        local result = game:HttpGet(url)
+        local data = HttpService:JSONDecode(result)
+        
+        if data and data.data then
+            local servers = {}
+            for _, server in ipairs(data.data) do
+                if server.playing < server.maxPlayers and server.id ~= game.JobId then
+                    table.insert(servers, server)
+                end
+            end
+            
+            if #servers > 0 then
+                table.sort(servers, function(a, b) return a.playing < b.playing end)
+                local lowestServer = servers[1]
+                TeleportService:TeleportToPlaceInstance(game.PlaceId, lowestServer.id, LocalPlayer)
+            else
+                warn("No available servers found")
+            end
+        end
+    end)
+    
+    if not success then
+        warn("Failed to hop server: " .. tostring(err))
+    end
+end)
+
+local JoinCard = Instance.new("Frame")
+JoinCard.Size = UDim2.new(1, -40, 0, 120)
+JoinCard.Position = UDim2.new(0, 20, 0, 200)
+JoinCard.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+JoinCard.BackgroundTransparency = 0.3
+JoinCard.Parent = ServersContent
+
+local JoinCardCorner = Instance.new("UICorner")
+JoinCardCorner.CornerRadius = UDim.new(0, 10)
+JoinCardCorner.Parent = JoinCard
+
+local JoinCardStroke = Instance.new("UIStroke")
+JoinCardStroke.Color = Color3.fromRGB(60, 60, 70)
+JoinCardStroke.Thickness = 1
+JoinCardStroke.Parent = JoinCard
+
+local JoinTitle = Instance.new("TextLabel")
+JoinTitle.Size = UDim2.new(1, -20, 0, 25)
+JoinTitle.Position = UDim2.new(0, 10, 0, 10)
+JoinTitle.BackgroundTransparency = 1
+JoinTitle.Text = GetText("JoinSpecific")
+JoinTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+JoinTitle.TextSize = 18
+JoinTitle.Font = Enum.Font.GothamBold
+JoinTitle.TextXAlignment = Enum.TextXAlignment.Left
+JoinTitle.Parent = JoinCard
+
+local JobIdInput = Instance.new("TextBox")
+JobIdInput.Size = UDim2.new(1, -140, 0, 40)
+JobIdInput.Position = UDim2.new(0, 10, 0, 45)
+JobIdInput.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+JobIdInput.Text = ""
+JobIdInput.PlaceholderText = GetText("EnterJobId")
+JobIdInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+JobIdInput.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+JobIdInput.TextSize = 16
+JobIdInput.Font = Enum.Font.Gotham
+JobIdInput.Parent = JoinCard
+
+local JobIdInputCorner = Instance.new("UICorner")
+JobIdInputCorner.CornerRadius = UDim.new(0, 8)
+JobIdInputCorner.Parent = JobIdInput
+
+local JoinBtn = Instance.new("TextButton")
+JoinBtn.Size = UDim2.new(0, 110, 0, 40)
+JoinBtn.Position = UDim2.new(1, -120, 0, 45)
+JoinBtn.BackgroundColor3 = Color3.fromRGB(147, 51, 234)
+JoinBtn.Text = GetText("Join")
+JoinBtn.TextColor3 = Color3.new(1,1,1)
+JoinBtn.TextSize = 16
+JoinBtn.Font = Enum.Font.GothamBold
+JoinBtn.Parent = JoinCard
+
+local JoinBtnCorner = Instance.new("UICorner")
+JoinBtnCorner.CornerRadius = UDim.new(0, 8)
+JoinBtnCorner.Parent = JoinBtn
+
+JoinBtn.MouseButton1Click:Connect(function()
+    local jobId = JobIdInput.Text
+    if jobId and jobId ~= "" then
+        TeleportService:TeleportToPlaceInstance(game.PlaceId, jobId, LocalPlayer)
+    end
+end)
+
+local RecentLabel = Instance.new("TextLabel")
+RecentLabel.Size = UDim2.new(0, 100, 0, 20)
+RecentLabel.Position = UDim2.new(0, 10, 0, 90)
+RecentLabel.BackgroundTransparency = 1
+RecentLabel.Text = "Quick Actions:"
+RecentLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+RecentLabel.TextSize = 14
+RecentLabel.Font = Enum.Font.Gotham
+RecentLabel.TextXAlignment = Enum.TextXAlignment.Left
+RecentLabel.Parent = JoinCard
+
+local QuickCopyBtn = Instance.new("TextButton")
+QuickCopyBtn.Size = UDim2.new(0, 120, 0, 25)
+QuickCopyBtn.Position = UDim2.new(0, 110, 0, 87)
+QuickCopyBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+QuickCopyBtn.Text = "Copy Current ID"
+QuickCopyBtn.TextColor3 = Color3.new(1,1,1)
+QuickCopyBtn.TextSize = 12
+QuickCopyBtn.Font = Enum.Font.GothamBold
+QuickCopyBtn.Parent = JoinCard
+
+local QuickCopyCorner = Instance.new("UICorner")
+QuickCopyCorner.CornerRadius = UDim.new(0, 6)
+QuickCopyCorner.Parent = QuickCopyBtn
+
+QuickCopyBtn.MouseButton1Click:Connect(function()
+    setclipboard(game.JobId)
+    QuickCopyBtn.Text = "Copied!"
+    wait(1)
+    QuickCopyBtn.Text = "Copy Current ID"
+end)
+--[[    Ghostz Hub v0.0.30 - Section 8 of 8    ]]
+
+local JoinCard = Instance.new("Frame")
+JoinCard.Size = UDim2.new(1, -40, 0, 120)
+JoinCard.Position = UDim2.new(0, 20, 0, 200)
+JoinCard.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+JoinCard.BackgroundTransparency = 0.3
+JoinCard.Parent = ServersContent
+
+local JoinCardCorner = Instance.new("UICorner")
+JoinCardCorner.CornerRadius = UDim.new(0, 10)
+JoinCardCorner.Parent = JoinCard
+
+local JoinCardStroke = Instance.new("UIStroke")
+JoinCardStroke.Color = Color3.fromRGB(60, 60, 70)
+JoinCardStroke.Thickness = 1
+JoinCardStroke.Parent = JoinCard
+
+local JoinTitle = Instance.new("TextLabel")
+JoinTitle.Size = UDim2.new(1, -20, 0, 25)
+JoinTitle.Position = UDim2.new(0, 10, 0, 10)
+JoinTitle.BackgroundTransparency = 1
+JoinTitle.Text = GetText("JoinSpecific")
+JoinTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+JoinTitle.TextSize = 18
+JoinTitle.Font = Enum.Font.GothamBold
+JoinTitle.TextXAlignment = Enum.TextXAlignment.Left
+JoinTitle.Parent = JoinCard
+
+local JobIdInput = Instance.new("TextBox")
+JobIdInput.Size = UDim2.new(1, -140, 0, 40)
+JobIdInput.Position = UDim2.new(0, 10, 0, 45)
+JobIdInput.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+JobIdInput.Text = ""
+JobIdInput.PlaceholderText = GetText("EnterJobId")
+JobIdInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+JobIdInput.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+JobIdInput.TextSize = 16
+JobIdInput.Font = Enum.Font.Gotham
+JobIdInput.Parent = JoinCard
+
+local JobIdInputCorner = Instance.new("UICorner")
+JobIdInputCorner.CornerRadius = UDim.new(0, 8)
+JobIdInputCorner.Parent = JobIdInput
+
+local JoinBtn = Instance.new("TextButton")
+JoinBtn.Size = UDim2.new(0, 110, 0, 40)
+JoinBtn.Position = UDim2.new(1, -120, 0, 45)
+JoinBtn.BackgroundColor3 = Color3.fromRGB(147, 51, 234)
+JoinBtn.Text = GetText("Join")
+JoinBtn.TextColor3 = Color3.new(1,1,1)
+JoinBtn.TextSize = 16
+JoinBtn.Font = Enum.Font.GothamBold
+JoinBtn.Parent = JoinCard
+
+local JoinBtnCorner = Instance.new("UICorner")
+JoinBtnCorner.CornerRadius = UDim.new(0, 8)
+JoinBtnCorner.Parent = JoinBtn
+
+JoinBtn.MouseButton1Click:Connect(function()
+    local jobId = JobIdInput.Text
+    if jobId and jobId ~= "" then
+        TeleportService:TeleportToPlaceInstance(game.PlaceId, jobId, LocalPlayer)
+    end
+end)
+
+local RecentLabel = Instance.new("TextLabel")
+RecentLabel.Size = UDim2.new(0, 100, 0, 20)
+RecentLabel.Position = UDim2.new(0, 10, 0, 90)
+RecentLabel.BackgroundTransparency = 1
+RecentLabel.Text = "Quick Actions:"
+RecentLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+RecentLabel.TextSize = 14
+RecentLabel.Font = Enum.Font.Gotham
+RecentLabel.TextXAlignment = Enum.TextXAlignment.Left
+RecentLabel.Parent = JoinCard
+
+local QuickCopyBtn = Instance.new("TextButton")
+QuickCopyBtn.Size = UDim2.new(0, 120, 0, 25)
+QuickCopyBtn.Position = UDim2.new(0, 110, 0, 87)
+QuickCopyBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+QuickCopyBtn.Text = "Copy Current ID"
+QuickCopyBtn.TextColor3 = Color3.new(1,1,1)
+QuickCopyBtn.TextSize = 12
+QuickCopyBtn.Font = Enum.Font.GothamBold
+QuickCopyBtn.Parent = JoinCard
+
+local QuickCopyCorner = Instance.new("UICorner")
+QuickCopyCorner.CornerRadius = UDim.new(0, 6)
+QuickCopyCorner.Parent = QuickCopyBtn
+
+QuickCopyBtn.MouseButton1Click:Connect(function()
+    setclipboard(game.JobId)
+    QuickCopyBtn.Text = "Copied!"
+    wait(1)
+    QuickCopyBtn.Text = "Copy Current ID"
+end)
+
+local PagesFrame = Instance.new("Frame")
+PagesFrame.Name = "Pages"
+PagesFrame.Size = UDim2.new(1, 0, 1, 0)
+PagesFrame.BackgroundTransparency = 1
+PagesFrame.Visible = false
+PagesFrame.Parent = ContentContainer
+ContentFrames["Pages"] = PagesFrame
+
+local PagesTabFrame = Instance.new("Frame")
+PagesTabFrame.Size = UDim2.new(1, -40, 0, 40)
+PagesTabFrame.Position = UDim2.new(0, 20, 0, 20)
+PagesTabFrame.BackgroundTransparency = 1
+PagesTabFrame.Parent = PagesFrame
+
+local MainScriptsBtn = Instance.new("TextButton")
+MainScriptsBtn.Size = UDim2.new(0.48, -5, 1, 0)
+MainScriptsBtn.Position = UDim2.new(0, 0, 0, 0)
+MainScriptsBtn.BackgroundColor3 = ThemeColors[Ghostz.Settings.Theme].Primary
+MainScriptsBtn.Text = "Main Scripts"
+MainScriptsBtn.TextColor3 = Color3.new(1,1,1)
+MainScriptsBtn.TextSize = 16
+MainScriptsBtn.Font = Enum.Font.GothamBold
+MainScriptsBtn.AutoButtonColor = false
+MainScriptsBtn.Parent = PagesTabFrame
+
+local MainScriptsBtnCorner = Instance.new("UICorner")
+MainScriptsBtnCorner.CornerRadius = UDim.new(0, 8)
+MainScriptsBtnCorner.Parent = MainScriptsBtn
+
+local OtherScriptsBtn = Instance.new("TextButton")
+OtherScriptsBtn.Size = UDim2.new(0.48, -5, 1, 0)
+OtherScriptsBtn.Position = UDim2.new(0.52, 5, 0, 0)
+OtherScriptsBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+OtherScriptsBtn.Text = "Other Scripts"
+OtherScriptsBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+OtherScriptsBtn.TextSize = 16
+OtherScriptsBtn.Font = Enum.Font.GothamBold
+OtherScriptsBtn.AutoButtonColor = false
+OtherScriptsBtn.Parent = PagesTabFrame
+
+local OtherScriptsBtnCorner = Instance.new("UICorner")
+OtherScriptsBtnCorner.CornerRadius = UDim.new(0, 8)
+OtherScriptsBtnCorner.Parent = OtherScriptsBtn
+
+local MainScriptsContent = Instance.new("ScrollingFrame")
+MainScriptsContent.Name = "MainScriptsContent"
+MainScriptsContent.Size = UDim2.new(1, -40, 1, -80)
+MainScriptsContent.Position = UDim2.new(0, 20, 0, 70)
+MainScriptsContent.BackgroundTransparency = 1
+MainScriptsContent.Visible = true
+MainScriptsContent.BorderSizePixel = 0
+MainScriptsContent.ScrollBarThickness = 0
+MainScriptsContent.CanvasSize = UDim2.new(0, 0, 0, 200)
+MainScriptsContent.Parent = PagesFrame
+
+local OtherScriptsContent = Instance.new("ScrollingFrame")
+OtherScriptsContent.Name = "OtherScriptsContent"
+OtherScriptsContent.Size = UDim2.new(1, -40, 1, -80)
+OtherScriptsContent.Position = UDim2.new(0, 20, 0, 70)
+OtherScriptsContent.BackgroundTransparency = 1
+OtherScriptsContent.Visible = false
+OtherScriptsContent.BorderSizePixel = 0
+OtherScriptsContent.ScrollBarThickness = 0
+OtherScriptsContent.CanvasSize = UDim2.new(0, 0, 0, 180)
+OtherScriptsContent.Parent = PagesFrame
+
+-- Layout for Other Scripts
+local OtherLayout = Instance.new("UIListLayout")
+OtherLayout.Padding = UDim.new(0, 10)
+OtherLayout.Parent = OtherScriptsContent
+
+-- Prison Life Button
+local PrisonLifeBtn = Instance.new("TextButton")
+PrisonLifeBtn.Size = UDim2.new(1, 0, 0, 50)
+PrisonLifeBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
+PrisonLifeBtn.Text = "Prison Life"
+PrisonLifeBtn.TextColor3 = Color3.new(1,1,1)
+PrisonLifeBtn.TextSize = 18
+PrisonLifeBtn.Font = Enum.Font.GothamBold
+PrisonLifeBtn.AutoButtonColor = true
+PrisonLifeBtn.Parent = OtherScriptsContent
+
+local PrisonCorner = Instance.new("UICorner")
+PrisonCorner.CornerRadius = UDim.new(0, 10)
+PrisonCorner.Parent = PrisonLifeBtn
+
+PrisonLifeBtn.MouseButton1Click:Connect(function()
+    PrisonLifeBtn.Text = "Loading..."
+    PrisonLifeBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    
+    spawn(function()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/zenss555a/script/refs/heads/main/Prison-Life.lua", true))()
+        end)
+        
+        if success then
+            PrisonLifeBtn.Text = "Loaded!"
+            PrisonLifeBtn.BackgroundColor3 = Color3.fromRGB(34, 197, 94)
+            wait(2)
+            PrisonLifeBtn.Text = "Prison Life"
+            PrisonLifeBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
+        else
+            warn("[Ghostz] Failed to load Prison Life: " .. tostring(err))
+            PrisonLifeBtn.Text = "Failed!"
+            PrisonLifeBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+            wait(2)
+            PrisonLifeBtn.Text = "Prison Life"
+            PrisonLifeBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
+        end
+    end)
+end)
+
+-- Funcs and Stuff Button
+local FuncsBtn = Instance.new("TextButton")
+FuncsBtn.Size = UDim2.new(1, 0, 0, 50)
+FuncsBtn.BackgroundColor3 = Color3.fromRGB(59, 130, 246)
+FuncsBtn.Text = "Funcs and Stuff"
+FuncsBtn.TextColor3 = Color3.new(1,1,1)
+FuncsBtn.TextSize = 18
+FuncsBtn.Font = Enum.Font.GothamBold
+FuncsBtn.AutoButtonColor = true
+FuncsBtn.Parent = OtherScriptsContent
+
+local FuncsCorner = Instance.new("UICorner")
+FuncsCorner.CornerRadius = UDim.new(0, 10)
+FuncsCorner.Parent = FuncsBtn
+
+FuncsBtn.MouseButton1Click:Connect(function()
+    FuncsBtn.Text = "Loading..."
+    FuncsBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    
+    spawn(function()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/K9ntra/FuncsAndStuff/refs/heads/main/abc.luau'))()
+        end)
+        
+        if success then
+            FuncsBtn.Text = "Loaded!"
+            FuncsBtn.BackgroundColor3 = Color3.fromRGB(34, 197, 94)
+            wait(2)
+            FuncsBtn.Text = "Funcs and Stuff"
+            FuncsBtn.BackgroundColor3 = Color3.fromRGB(59, 130, 246)
+        else
+            warn("[Ghostz] Failed to load Funcs: " .. tostring(err))
+            FuncsBtn.Text = "Failed!"
+            FuncsBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 150)
+            wait(2)
+            FuncsBtn.Text = "Funcs and Stuff"
+            FuncsBtn.BackgroundColor3 = Color3.fromRGB(59, 130, 246)
+        end
+    end)
+end)
+
+-- Aimlock Button (Main Scripts)
+local AimlockBtn = Instance.new("TextButton")
+AimlockBtn.Size = UDim2.new(1, 0, 0, 50)
+AimlockBtn.Position = UDim2.new(0, 0, 0, 0)
+AimlockBtn.BackgroundColor3 = Color3.fromRGB(147, 51, 234)
+AimlockBtn.Text = "Aimlocker by fkdaf3dz"
+AimlockBtn.TextColor3 = Color3.new(1,1,1)
+AimlockBtn.TextSize = 18
+AimlockBtn.Font = Enum.Font.GothamBold
+AimlockBtn.AutoButtonColor = true
+AimlockBtn.Parent = MainScriptsContent
+
+local AimlockBtnCorner = Instance.new("UICorner")
+AimlockBtnCorner.CornerRadius = UDim.new(0, 10)
+AimlockBtnCorner.Parent = AimlockBtn
+
+AimlockBtn.MouseButton1Click:Connect(function()
+    AimlockBtn.Text = "Loading..."
+    AimlockBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    
+    spawn(function()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/fkdaf3dz/Aimlock-OP/refs/heads/main/Aimlock"))()
+        end)
+        
+        if success then
+            AimlockBtn.Text = "Loaded!"
+            AimlockBtn.BackgroundColor3 = Color3.fromRGB(34, 197, 94)
+            wait(2)
+            AimlockBtn.Text = "Aimlocker by fkdaf3dz"
+            AimlockBtn.BackgroundColor3 = Color3.fromRGB(147, 51, 234)
+        else
+            warn("[Ghostz] Failed to load aimlock: " .. tostring(err))
+            AimlockBtn.Text = "Failed!"
+            AimlockBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
+            wait(2)
+            AimlockBtn.Text = "Aimlocker by fkdaf3dz"
+            AimlockBtn.BackgroundColor3 = Color3.fromRGB(147, 51, 234)
+        end
+    end)
+end)
+
+MainScriptsBtn.MouseButton1Click:Connect(function()
+    MainScriptsContent.Visible = true
+    OtherScriptsContent.Visible = false
+    MainScriptsBtn.BackgroundColor3 = ThemeColors[Ghostz.Settings.Theme].Primary
+    MainScriptsBtn.TextColor3 = Color3.new(1,1,1)
+    OtherScriptsBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    OtherScriptsBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+end)
+
+OtherScriptsBtn.MouseButton1Click:Connect(function()
+    MainScriptsContent.Visible = false
+    OtherScriptsContent.Visible = true
+    OtherScriptsBtn.BackgroundColor3 = ThemeColors[Ghostz.Settings.Theme].Primary
+    OtherScriptsBtn.TextColor3 = Color3.new(1,1,1)
+    MainScriptsBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    MainScriptsBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+end)
+
+local originalApplyTheme = ApplyTheme
+ApplyTheme = function(themeName)
+    local theme = ThemeColors[themeName] or ThemeColors.Purple
+    originalApplyTheme(themeName)
+    
+    if MainScriptsBtn and OtherScriptsBtn then
+        if MainScriptsContent.Visible then
+            MainScriptsBtn.BackgroundColor3 = theme.Primary
+            MainScriptsBtn.TextColor3 = Color3.new(1,1,1)
+            OtherScriptsBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+            OtherScriptsBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+        else
+            OtherScriptsBtn.BackgroundColor3 = theme.Primary
+            OtherScriptsBtn.TextColor3 = Color3.new(1,1,1)
+            MainScriptsBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+            MainScriptsBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+        end
+    end
+end
+
+local CreditsFrame = Instance.new("Frame")
+CreditsFrame.Name = "Credits"
+CreditsFrame.Size = UDim2.new(1, 0, 1, 0)
+CreditsFrame.BackgroundTransparency = 1
+CreditsFrame.Visible = false
+CreditsFrame.Parent = ContentContainer
+ContentFrames["Credits"] = CreditsFrame
+
+local CreditsTitle = Instance.new("TextLabel")
+CreditsTitle.Size = UDim2.new(1, 0, 0, 50)
+CreditsTitle.Position = UDim2.new(0, 0, 0, 30)
+CreditsTitle.BackgroundTransparency = 1
+CreditsTitle.Text = GetText("Credits")
+CreditsTitle.TextColor3 = ThemeColors[Ghostz.Settings.Theme].Accent
+CreditsTitle.TextSize = 36
+CreditsTitle.Font = Enum.Font.GothamBlack
+CreditsTitle.Parent = CreditsFrame
+
+local CreditsText = Instance.new("TextLabel")
+CreditsText.Size = UDim2.new(1, -40, 0, 200)
+CreditsText.Position = UDim2.new(0, 20, 0, 100)
+CreditsText.BackgroundTransparency = 1
+CreditsText.Text = "Ghostz Hub v" .. Ghostz.Version .. "\n\nCreated by: percaholicz\n\n" .. GetText("ThankYou")
+CreditsText.TextColor3 = Color3.fromRGB(255, 255, 255)
+CreditsText.TextSize = 18
+CreditsText.Font = Enum.Font.Gotham
+CreditsText.TextWrapped = true
+CreditsText.Parent = CreditsFrame
+
+-- Use Animation Functions
+Island.MouseButton1Click:Connect(function()
+    _G.OpenHub()
+end)
+
+CloseBtn.MouseButton1Click:Connect(function()
+    _G.CloseHub()
+end)
+
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.RightShift then
+        if Main.Visible then
+            _G.CloseHub()
+        else
+            _G.OpenHub()
+        end
+    end
+end)
+
+ApplyTheme(Ghostz.Settings.Theme)
+if not Ghostz.Settings.UIEnabled then
+    Main.BackgroundTransparency = 1
+    ToggleCircle.Position = UDim2.new(0, 2, 0.5, -11)
+    EnableToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+end
+
+print("Ghostz Hub v" .. Ghostz.Version .. " loaded successfully!")

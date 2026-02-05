@@ -125,7 +125,7 @@ function LoadSettings()
 end
 
 pcall(LoadSettings)
---[[    Ghostz Hub v0.0.31 - Section 2 of 8 (UPDATED)  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
+--[[    Ghostz Hub v0.0.31 - Section 2 of 8 (FIXED)  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
 
 _G.ScreenGui = Instance.new("ScreenGui")
 _G.ScreenGui.Name = "Ghostz"
@@ -197,15 +197,14 @@ Glow.ImageTransparency = 0.85
 Glow.ZIndex = 0
 Glow.Parent = _G.Main
 
--- LAVENDER TOWN GHOST BUTTON WITH PURPLE BACKGROUND
+-- GHOST DECAL BUTTON WITH PURPLE NEON OUTLINE
 Island = Instance.new("ImageButton")
 Island.Name = "GhostzIsland"
 Island.Size = UDim2.new(0, 90, 0, 90)
 Island.Position = UDim2.new(0.5, -45, 0, 20)
-Island.BackgroundColor3 = Color3.fromRGB(147, 51, 234) -- Solid Purple Background
-Island.BackgroundTransparency = 0
-Island.Image = "rbxassetid://90273056" -- Lavender Town Ghost
-Island.ImageColor3 = Color3.new(1, 1, 1)
+Island.BackgroundTransparency = 1 -- Transparent background to show ghost only
+Island.Image = "rbxassetid://8047900858" -- Ghost decal
+Island.ImageColor3 = Color3.new(1, 1, 1) -- Full color
 Island.Active = true
 Island.Draggable = true
 Island.Parent = _G.ScreenGui
@@ -214,21 +213,21 @@ local IslandCorner = Instance.new("UICorner")
 IslandCorner.CornerRadius = UDim.new(0, 12)
 IslandCorner.Parent = Island
 
--- Purple Glow Stroke
+-- Purple Neon Outline
 local IslandStroke = Instance.new("UIStroke")
-IslandStroke.Color = Color3.fromRGB(168, 85, 247) -- Lighter Purple Glow
+IslandStroke.Color = Color3.fromRGB(168, 85, 247) -- Purple neon
 IslandStroke.Thickness = 3
 IslandStroke.Parent = Island
 
--- Outer Glow Effect
+-- Purple Glow Effect Behind
 local IslandGlow = Instance.new("ImageLabel")
 IslandGlow.Name = "Glow"
 IslandGlow.Size = UDim2.new(1.4, 0, 1.4, 0)
 IslandGlow.Position = UDim2.new(-0.2, 0, -0.2, 0)
 IslandGlow.BackgroundTransparency = 1
 IslandGlow.Image = "rbxassetid://4996891970"
-IslandGlow.ImageColor3 = Color3.fromRGB(168, 85, 247) -- Purple Glow
-IslandGlow.ImageTransparency = 0.7
+IslandGlow.ImageColor3 = Color3.fromRGB(168, 85, 247) -- Purple glow
+IslandGlow.ImageTransparency = 0.6
 IslandGlow.ZIndex = -1
 IslandGlow.Parent = Island
 
@@ -311,6 +310,8 @@ end
 
 -- Island Click to Open
 Island.MouseButton1Click:Connect(OpenHub)
+
+
 --[[    Ghostz Hub v0.0.30 - Section 3 of 8  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
 
 function ApplyTheme(themeName)

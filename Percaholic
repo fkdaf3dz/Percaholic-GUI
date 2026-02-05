@@ -1,4 +1,4 @@
---[[    Ghostz Hub v0.0.30 - Section 1 of 8    ]]
+--[[    Ghostz Hub v0.0.30 - Section 1 of 8  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
 
 if not game:IsLoaded() then 
     game.Loaded:Wait() 
@@ -125,7 +125,7 @@ function LoadSettings()
 end
 
 pcall(LoadSettings)
---[[    Ghostz Hub v0.0.30 - Section 2 of 8    ]]
+--[[    Ghostz Hub v0.0.30 - Section 2 of 8  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
 
 _G.ScreenGui = Instance.new("ScreenGui")
 _G.ScreenGui.Name = "Ghostz"
@@ -197,28 +197,40 @@ Glow.ImageTransparency = 0.85
 Glow.ZIndex = 0
 Glow.Parent = _G.Main
 
-Island = Instance.new("TextButton") -- Global
-Island.Size = UDim2.new(0, 120, 0, 40)
-Island.Position = UDim2.new(0.5, -60, 0, 30)
-Island.BackgroundColor3 = _G.ThemeColors[_G.Ghostz.Settings.Theme].Primary
+-- CLOCK ISLAND BUTTON WITH PURPLE GLOW
+Island = Instance.new("ImageButton")
+Island.Name = "GhostzIsland"
+Island.Size = UDim2.new(0, 90, 0, 90)
+Island.Position = UDim2.new(0.5, -45, 0, 20)
+Island.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
 Island.BackgroundTransparency = 0.2
-Island.Text = "👻 Ghostz"
-Island.TextColor3 = Color3.new(1, 1, 1)
-Island.TextSize = 18
-Island.Font = Enum.Font.GothamBold
-Island.AutoButtonColor = false
+Island.Image = "rbxassetid://95917335977104"
+Island.ImageColor3 = Color3.new(1, 1, 1)
 Island.Active = true
 Island.Draggable = true
 Island.Parent = _G.ScreenGui
 
 local IslandCorner = Instance.new("UICorner")
-IslandCorner.CornerRadius = UDim.new(0, 8)
+IslandCorner.CornerRadius = UDim.new(0, 12)
 IslandCorner.Parent = Island
 
+-- Purple Glow Stroke
 local IslandStroke = Instance.new("UIStroke")
-IslandStroke.Color = _G.ThemeColors[_G.Ghostz.Settings.Theme].Secondary
-IslandStroke.Thickness = 2
+IslandStroke.Color = _G.ThemeColors[_G.Ghostz.Settings.Theme].Primary
+IslandStroke.Thickness = 3
 IslandStroke.Parent = Island
+
+-- Outer Glow Effect
+local IslandGlow = Instance.new("ImageLabel")
+IslandGlow.Name = "Glow"
+IslandGlow.Size = UDim2.new(1.4, 0, 1.4, 0)
+IslandGlow.Position = UDim2.new(-0.2, 0, -0.2, 0)
+IslandGlow.BackgroundTransparency = 1
+IslandGlow.Image = "rbxassetid://4996891970"
+IslandGlow.ImageColor3 = _G.ThemeColors[_G.Ghostz.Settings.Theme].Primary
+IslandGlow.ImageTransparency = 0.7
+IslandGlow.ZIndex = -1
+IslandGlow.Parent = Island
 
 _G.NavBar = Instance.new("Frame")
 _G.NavBar.Size = UDim2.new(1, -32, 0, 50)
@@ -299,7 +311,7 @@ end
 
 -- Island Click to Open
 Island.MouseButton1Click:Connect(OpenHub)
---[[    Ghostz Hub v0.0.30 - Section 3 of 8    ]]
+--[[    Ghostz Hub v0.0.30 - Section 3 of 8  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
 
 function ApplyTheme(themeName)
     local theme = _G.ThemeColors[themeName] or _G.ThemeColors.Purple
@@ -480,7 +492,7 @@ function CreateSection(name, titleText, accentColor)
     
     return Section, Content
 end
---[[    Ghostz Hub v0.0.30 - Section 4 of 8    ]]
+--[[    Ghostz Hub v0.0.30 - Section 4 of 8 ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️   ]]
 
 local HomeFrame = Instance.new("ScrollingFrame")
 HomeFrame.Name = "Home"
@@ -687,7 +699,7 @@ for _, data in ipairs(settingsData) do
         SubSection.Visible = true
     end)
 end
---[[    Ghostz Hub v0.0.30 - Section 5 of 8    ]]
+--[[    Ghostz Hub v0.0.30 - Section 5 of 8 ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️   ]]
 
 local ScriptSection = _G.ContentFrames["ScriptSettings"]
 local ScriptContent = ScriptSection:WaitForChild("Content")
@@ -880,7 +892,7 @@ end
 SaveBtn = CreateActionButton(GetText("SaveSettings"), 10, Color3.fromRGB(147, 51, 234), "SaveSettings")
 ResetBtn = CreateActionButton(GetText("ResetSettings"), 50, Color3.fromRGB(126, 34, 206), "ResetSettings")
 ExportBtn = CreateActionButton(GetText("ExportConfig"), 90, Color3.fromRGB(109, 40, 217), "ExportConfig")
---[[    Ghostz Hub v0.0.30 - Section 6 of 8    ]]
+--[[    Ghostz Hub v0.0.30 - Section 6 of 8 ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️   ]]
 
 local languages = {"English", "Chinese", "Japanese", "Russian"}
 for _, lang in ipairs(languages) do
@@ -1082,7 +1094,7 @@ ScriptContent.InputBegan:Connect(function(input)
         end
     end
 end)
---[[    Ghostz Hub v0.0.30 - Section 7 of 8    ]]
+--[[    Ghostz Hub v0.0.30 - Section 7 of 8  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
 
 local ServersSection = _G.ContentFrames["Servers"]
 local ServersContent = ServersSection:WaitForChild("Content")
@@ -1398,7 +1410,7 @@ QuickCopyBtn.MouseButton1Click:Connect(function()
     wait(1)
     QuickCopyBtn.Text = "Copy Current ID"
 end)
---[[    Ghostz Hub v0.0.30 - Section 8 of 8    ]]
+--[[    Ghostz Hub v0.0.30 - Section 8 of 8  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
 
 local PagesFrame = Instance.new("Frame")
 PagesFrame.Name = "Pages"

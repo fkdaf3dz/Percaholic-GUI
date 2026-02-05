@@ -125,7 +125,7 @@ function LoadSettings()
 end
 
 pcall(LoadSettings)
---[[    Ghostz Hub v0.0.31 - Section 2 of 8 (GHOST GIRL UPDATE)  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
+--[[    Ghostz Hub v0.0.31 - Section 2 of 8 (CLEAN - NO OUTLINE)  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
 
 _G.ScreenGui = Instance.new("ScreenGui")
 _G.ScreenGui.Name = "Ghostz"
@@ -197,49 +197,23 @@ Glow.ImageTransparency = 0.85
 Glow.ZIndex = 0
 Glow.Parent = _G.Main
 
--- GHOST GIRL MASCOT BUTTON (1502721993) WITH SHAPE OUTLINE
+-- GHOST GIRL MASCOT - CLEAN NO OUTLINE
 Island = Instance.new("ImageButton")
 Island.Name = "GhostzIsland"
 Island.Size = UDim2.new(0, 100, 0, 100)
 Island.Position = UDim2.new(0.5, -50, 0, 20)
 Island.BackgroundTransparency = 1
-Island.Image = "rbxassetid://1502721993" -- Ghost girl mascot
+Island.Image = "rbxassetid://1502721993" -- Ghost girl mascot ID
 Island.ImageColor3 = Color3.new(1, 1, 1)
 Island.ScaleType = Enum.ScaleType.Fit
 Island.Active = true
 Island.Draggable = true
+Island.Visible = true -- Ensure it's visible
+Island.ZIndex = 10
 Island.Parent = _G.ScreenGui
 
--- PURPLE OUTLINE (Same image behind, scaled up and tinted - follows character shape)
-local IslandOutline = Instance.new("ImageLabel")
-IslandOutline.Name = "CharacterOutline"
-IslandOutline.Size = UDim2.new(1.25, 0, 1.25, 0) -- 25% bigger for outline effect
-IslandOutline.Position = UDim2.new(0.5, 0, 0.5, 0)
-IslandOutline.AnchorPoint = Vector2.new(0.5, 0.5)
-IslandOutline.BackgroundTransparency = 1
-IslandOutline.Image = "rbxassetid://1502721993" -- Same ghost image
-IslandOutline.ImageColor3 = Color3.fromRGB(168, 85, 247) -- Purple tint
-IslandOutline.ImageTransparency = 0.35 -- Semi-transparent outline
-IslandOutline.ScaleType = Enum.ScaleType.Fit
-IslandOutline.ZIndex = Island.ZIndex - 1 -- Behind the button
-IslandOutline.Parent = Island
-
--- Soft glow behind (optional, for neon aura)
-local IslandAura = Instance.new("ImageLabel")
-IslandAura.Name = "Aura"
-IslandAura.Size = UDim2.new(1.5, 0, 1.5, 0)
-IslandAura.Position = UDim2.new(0.5, 0, 0.5, 0)
-IslandAura.AnchorPoint = Vector2.new(0.5, 0.5)
-IslandAura.BackgroundTransparency = 1
-IslandAura.Image = "rbxassetid://4996891970"
-IslandAura.ImageColor3 = Color3.fromRGB(168, 85, 247) -- Purple glow
-IslandAura.ImageTransparency = 0.8
-IslandAura.ZIndex = Island.ZIndex - 2 -- Furthest back
-IslandAura.Parent = Island
-
-local IslandCorner = Instance.new("UICorner")
-IslandCorner.CornerRadius = UDim.new(0, 12)
-IslandCorner.Parent = Island
+-- NO OUTLINE - NO STROKE - NO BACKGROUND
+-- Just the raw image
 
 _G.NavBar = Instance.new("Frame")
 _G.NavBar.Size = UDim2.new(1, -32, 0, 50)
@@ -320,16 +294,19 @@ end
 
 -- Island Click to Open
 Island.MouseButton1Click:Connect(OpenHub)
-
---[[    Ghostz Hub v0.0.30 - Section 3 of 8  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
-
 function ApplyTheme(themeName)
     local theme = _G.ThemeColors[themeName] or _G.ThemeColors.Purple
     _G.Main:FindFirstChildOfClass("UIStroke").Color = theme.Primary
-    Island.BackgroundColor3 = theme.Primary
-    Island:FindFirstChildOfClass("UIStroke").Color = theme.Secondary
     _G.Main:FindFirstChildOfClass("ImageLabel").ImageColor3 = theme.Primary
     _G.NavBar.BackgroundColor3 = theme.Nav
+    
+    -- Only style Island if it exists and has the old properties
+    if Island then
+        -- Remove or comment out these lines since Island is now just an image:
+        -- Island.BackgroundColor3 = theme.Primary
+        -- local islandStroke = Island:FindFirstChildOfClass("UIStroke")
+        -- if islandStroke then islandStroke.Color = theme.Secondary end
+    end
     
     for name, btn in pairs(_G.TabButtons) do
         if name == _G.Ghostz.CurrentTab then
@@ -364,144 +341,6 @@ function ApplyTheme(themeName)
     end
 end
 
-function ApplyTransparency(value)
-    if _G.Ghostz.Settings.UIEnabled then
-        _G.Main.BackgroundTransparency = value
-    else
-        _G.Main.BackgroundTransparency = 1
-    end
-end
-
-function SwitchTab(tabName)
-    _G.Ghostz.CurrentTab = tabName
-    local theme = _G.ThemeColors[_G.Ghostz.Settings.Theme]
-    for name, btn in pairs(_G.TabButtons) do
-        if name == tabName then
-            btn.BackgroundColor3 = theme.Primary
-            btn.TextColor3 = Color3.new(1,1,1)
-        else
-            btn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
-            btn.TextColor3 = Color3.fromRGB(180, 180, 180)
-        end
-    end
-    
-    for name, frame in pairs(_G.ContentFrames) do
-        frame.Visible = (name == tabName)
-    end
-end
-
-local TabNames = {"Home", "Pages", "Credits"}
-
-for i, tabName in ipairs(TabNames) do
-    local TabBtn = Instance.new("TextButton")
-    TabBtn.Size = UDim2.new(0, 90, 0, 34)
-    TabBtn.Position = UDim2.new(0, 250 + (i-1)*100, 0.5, -17)
-    
-    if tabName == "Home" then
-        TabBtn.BackgroundColor3 = _G.ThemeColors[_G.Ghostz.Settings.Theme].Primary
-        TabBtn.TextColor3 = Color3.new(1,1,1)
-    else
-        TabBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
-        TabBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
-    end
-    
-    TabBtn.BackgroundTransparency = 0.2
-    TabBtn.Text = tabName
-    TabBtn.TextSize = 16
-    TabBtn.Font = Enum.Font.GothamBold
-    TabBtn.AutoButtonColor = false
-    TabBtn.Parent = _G.NavBar
-    
-    local TabCorner = Instance.new("UICorner")
-    TabCorner.CornerRadius = UDim.new(0, 8)
-    TabCorner.Parent = TabBtn
-    
-    _G.TabButtons[tabName] = TabBtn
-    
-    TabBtn.MouseButton1Click:Connect(function()
-        SwitchTab(tabName)
-    end)
-end
-
-CloseBtn = Instance.new("TextButton") -- Global
-CloseBtn.Size = UDim2.new(0, 34, 0, 34)
-CloseBtn.Position = UDim2.new(1, -48, 0.5, -17)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
-CloseBtn.Text = "X"
-CloseBtn.TextColor3 = Color3.new(1,1,1)
-CloseBtn.TextSize = 20
-CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.Parent = _G.NavBar
-
-local CloseCorner = Instance.new("UICorner")
-CloseCorner.CornerRadius = UDim.new(0, 8)
-CloseCorner.Parent = CloseBtn
-
--- Close button animation
-CloseBtn.MouseButton1Click:Connect(CloseHub)
-
-function CreateSection(name, titleText, accentColor)
-    local Section = Instance.new("Frame")
-    Section.Name = name
-    Section.Size = UDim2.new(1, 0, 1, 0)
-    Section.BackgroundTransparency = 1
-    Section.Visible = false
-    Section.Parent = _G.ContentContainer
-    _G.ContentFrames[name] = Section
-    
-    local Header = Instance.new("Frame")
-    Header.Size = UDim2.new(1, 0, 0, 50)
-    Header.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
-    Header.BackgroundTransparency = 0.5
-    Header.Parent = Section
-    
-    local HeaderCorner = Instance.new("UICorner")
-    HeaderCorner.CornerRadius = UDim.new(0, 10)
-    HeaderCorner.Parent = Header
-    
-    local BackBtn = Instance.new("TextButton")
-    BackBtn.Size = UDim2.new(0, 80, 0, 36)
-    BackBtn.Position = UDim2.new(0, 10, 0.5, -18)
-    BackBtn.BackgroundColor3 = accentColor
-    BackBtn.Text = GetText("Back")
-    BackBtn.TextColor3 = Color3.new(1,1,1)
-    BackBtn.TextSize = 16
-    BackBtn.Font = Enum.Font.GothamBold
-    BackBtn.Parent = Header
-    table.insert(_G.UILabels, {Label = BackBtn, Key = "Back"})
-    
-    local BackCorner = Instance.new("UICorner")
-    BackCorner.CornerRadius = UDim.new(0, 8)
-    BackCorner.Parent = BackBtn
-    
-    local Title = Instance.new("TextLabel")
-    Title.Size = UDim2.new(0, 300, 1, 0)
-    Title.Position = UDim2.new(0.5, -150, 0, 0)
-    Title.BackgroundTransparency = 1
-    Title.Text = titleText
-    Title.TextColor3 = accentColor
-    Title.TextSize = 24
-    Title.Font = Enum.Font.GothamBold
-    Title.Parent = Header
-    
-    local Content = Instance.new("ScrollingFrame")
-    Content.Name = "Content"
-    Content.Size = UDim2.new(1, 0, 1, -60)
-    Content.Position = UDim2.new(0, 0, 0, 60)
-    Content.BackgroundTransparency = 1
-    Content.BorderSizePixel = 0
-    Content.ScrollBarThickness = 0
-    Content.CanvasSize = UDim2.new(0, 0, 0, 400)
-    Content.Parent = Section
-    
-    BackBtn.MouseButton1Click:Connect(function()
-        Section.Visible = false
-        _G.ContentFrames["Home"].Visible = true
-        SwitchTab("Home")
-    end)
-    
-    return Section, Content
-end
 --[[    Ghostz Hub v0.0.30 - Section 4 of 8 ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️   ]]
 
 local HomeFrame = Instance.new("ScrollingFrame")

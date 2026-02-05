@@ -125,7 +125,7 @@ function LoadSettings()
 end
 
 pcall(LoadSettings)
---[[    Ghostz Hub v0.0.31 - Section 2 of 8 (FIXED)  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
+--[[    Ghostz Hub v0.0.31 - Section 2 of 8 (GHOST GIRL UPDATE)  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
 
 _G.ScreenGui = Instance.new("ScreenGui")
 _G.ScreenGui.Name = "Ghostz"
@@ -197,39 +197,49 @@ Glow.ImageTransparency = 0.85
 Glow.ZIndex = 0
 Glow.Parent = _G.Main
 
--- GHOST DECAL BUTTON WITH PURPLE NEON OUTLINE
+-- GHOST GIRL MASCOT BUTTON (1502721993) WITH SHAPE OUTLINE
 Island = Instance.new("ImageButton")
 Island.Name = "GhostzIsland"
-Island.Size = UDim2.new(0, 90, 0, 90)
-Island.Position = UDim2.new(0.5, -45, 0, 20)
-Island.BackgroundTransparency = 1 -- Transparent background to show ghost only
-Island.Image = "rbxassetid://8047900858" -- Ghost decal
-Island.ImageColor3 = Color3.new(1, 1, 1) -- Full color
+Island.Size = UDim2.new(0, 100, 0, 100)
+Island.Position = UDim2.new(0.5, -50, 0, 20)
+Island.BackgroundTransparency = 1
+Island.Image = "rbxassetid://1502721993" -- Ghost girl mascot
+Island.ImageColor3 = Color3.new(1, 1, 1)
+Island.ScaleType = Enum.ScaleType.Fit
 Island.Active = true
 Island.Draggable = true
 Island.Parent = _G.ScreenGui
 
+-- PURPLE OUTLINE (Same image behind, scaled up and tinted - follows character shape)
+local IslandOutline = Instance.new("ImageLabel")
+IslandOutline.Name = "CharacterOutline"
+IslandOutline.Size = UDim2.new(1.25, 0, 1.25, 0) -- 25% bigger for outline effect
+IslandOutline.Position = UDim2.new(0.5, 0, 0.5, 0)
+IslandOutline.AnchorPoint = Vector2.new(0.5, 0.5)
+IslandOutline.BackgroundTransparency = 1
+IslandOutline.Image = "rbxassetid://1502721993" -- Same ghost image
+IslandOutline.ImageColor3 = Color3.fromRGB(168, 85, 247) -- Purple tint
+IslandOutline.ImageTransparency = 0.35 -- Semi-transparent outline
+IslandOutline.ScaleType = Enum.ScaleType.Fit
+IslandOutline.ZIndex = Island.ZIndex - 1 -- Behind the button
+IslandOutline.Parent = Island
+
+-- Soft glow behind (optional, for neon aura)
+local IslandAura = Instance.new("ImageLabel")
+IslandAura.Name = "Aura"
+IslandAura.Size = UDim2.new(1.5, 0, 1.5, 0)
+IslandAura.Position = UDim2.new(0.5, 0, 0.5, 0)
+IslandAura.AnchorPoint = Vector2.new(0.5, 0.5)
+IslandAura.BackgroundTransparency = 1
+IslandAura.Image = "rbxassetid://4996891970"
+IslandAura.ImageColor3 = Color3.fromRGB(168, 85, 247) -- Purple glow
+IslandAura.ImageTransparency = 0.8
+IslandAura.ZIndex = Island.ZIndex - 2 -- Furthest back
+IslandAura.Parent = Island
+
 local IslandCorner = Instance.new("UICorner")
 IslandCorner.CornerRadius = UDim.new(0, 12)
 IslandCorner.Parent = Island
-
--- Purple Neon Outline
-local IslandStroke = Instance.new("UIStroke")
-IslandStroke.Color = Color3.fromRGB(168, 85, 247) -- Purple neon
-IslandStroke.Thickness = 3
-IslandStroke.Parent = Island
-
--- Purple Glow Effect Behind
-local IslandGlow = Instance.new("ImageLabel")
-IslandGlow.Name = "Glow"
-IslandGlow.Size = UDim2.new(1.4, 0, 1.4, 0)
-IslandGlow.Position = UDim2.new(-0.2, 0, -0.2, 0)
-IslandGlow.BackgroundTransparency = 1
-IslandGlow.Image = "rbxassetid://4996891970"
-IslandGlow.ImageColor3 = Color3.fromRGB(168, 85, 247) -- Purple glow
-IslandGlow.ImageTransparency = 0.6
-IslandGlow.ZIndex = -1
-IslandGlow.Parent = Island
 
 _G.NavBar = Instance.new("Frame")
 _G.NavBar.Size = UDim2.new(1, -32, 0, 50)
@@ -310,7 +320,6 @@ end
 
 -- Island Click to Open
 Island.MouseButton1Click:Connect(OpenHub)
-
 
 --[[    Ghostz Hub v0.0.30 - Section 3 of 8  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
 

@@ -125,7 +125,7 @@ function LoadSettings()
 end
 
 pcall(LoadSettings)
---[[    Ghostz Hub v0.0.30 - Section 2 of 8  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
+--[[    Ghostz Hub v0.0.31 - Section 2 of 8 (UPDATED)  ❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️❄️  ]]
 
 _G.ScreenGui = Instance.new("ScreenGui")
 _G.ScreenGui.Name = "Ghostz"
@@ -197,14 +197,14 @@ Glow.ImageTransparency = 0.85
 Glow.ZIndex = 0
 Glow.Parent = _G.Main
 
--- CLOCK ISLAND BUTTON WITH PURPLE GLOW
+-- LAVENDER TOWN GHOST BUTTON WITH PURPLE BACKGROUND
 Island = Instance.new("ImageButton")
 Island.Name = "GhostzIsland"
 Island.Size = UDim2.new(0, 90, 0, 90)
 Island.Position = UDim2.new(0.5, -45, 0, 20)
-Island.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
-Island.BackgroundTransparency = 0.2
-Island.Image = "rbxassetid://95917335977104"
+Island.BackgroundColor3 = Color3.fromRGB(147, 51, 234) -- Solid Purple Background
+Island.BackgroundTransparency = 0
+Island.Image = "rbxassetid://90273056" -- Lavender Town Ghost
 Island.ImageColor3 = Color3.new(1, 1, 1)
 Island.Active = true
 Island.Draggable = true
@@ -216,7 +216,7 @@ IslandCorner.Parent = Island
 
 -- Purple Glow Stroke
 local IslandStroke = Instance.new("UIStroke")
-IslandStroke.Color = _G.ThemeColors[_G.Ghostz.Settings.Theme].Primary
+IslandStroke.Color = Color3.fromRGB(168, 85, 247) -- Lighter Purple Glow
 IslandStroke.Thickness = 3
 IslandStroke.Parent = Island
 
@@ -227,7 +227,7 @@ IslandGlow.Size = UDim2.new(1.4, 0, 1.4, 0)
 IslandGlow.Position = UDim2.new(-0.2, 0, -0.2, 0)
 IslandGlow.BackgroundTransparency = 1
 IslandGlow.Image = "rbxassetid://4996891970"
-IslandGlow.ImageColor3 = _G.ThemeColors[_G.Ghostz.Settings.Theme].Primary
+IslandGlow.ImageColor3 = Color3.fromRGB(168, 85, 247) -- Purple Glow
 IslandGlow.ImageTransparency = 0.7
 IslandGlow.ZIndex = -1
 IslandGlow.Parent = Island
